@@ -1,6 +1,8 @@
 import CodeMirror from '@uiw/react-codemirror';
 import { markdown } from '@codemirror/lang-markdown';
+import { languages } from '@codemirror/language-data';
 import { githubLight } from '@uiw/codemirror-theme-github';
+import { EditorView } from '@codemirror/view';
 
 interface EditorProps {
   value: string;
@@ -9,19 +11,22 @@ interface EditorProps {
 
 export default function Editor({ value, onChange }: EditorProps) {
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full overflow-auto bg-white">
       <CodeMirror
         value={value}
-        height="100%"
+        minHeight="100%"
         theme={githubLight}
-        extensions={[markdown()]}
+        extensions={[
+          markdown({ codeLanguages: languages }),
+          EditorView.lineWrapping,
+        ]}
         onChange={onChange}
-        className="h-full text-lg"
+        className="cm-ia-editor text-lg"
         basicSetup={{
-          lineNumbers: false,
+          lineNumbers: true,
           foldGutter: false,
-          highlightActiveLineGutter: false,
-          highlightActiveLine: false,
+          highlightActiveLineGutter: true,
+          highlightActiveLine: true,
         }}
         placeholder="Start typing..."
       />

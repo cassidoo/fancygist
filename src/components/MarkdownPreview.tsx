@@ -10,7 +10,7 @@ interface MarkdownPreviewProps {
 export default function MarkdownPreview({ content }: MarkdownPreviewProps) {
   return (
     <div className="h-full overflow-auto bg-white">
-      <article className="prose prose-lg max-w-4xl mx-auto px-8 py-12">
+      <article className="prose prose-lg max-w-3xl mx-auto px-6 py-16">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeHighlight]}

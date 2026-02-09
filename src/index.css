@@ -1,12 +1,69 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	margin: 0;
+	font-family:
+		"SF Pro Text",
+		"SF Pro Display",
+		-apple-system,
+		BlinkMacSystemFont,
+		"Segoe UI",
+		"Inter",
+		"Helvetica Neue",
+		Arial,
+		sans-serif;
+	background-color: #fafafa;
+	color: #1f2937;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.cm-ia-editor .cm-editor {
+	padding: 48px 0 120px;
+	max-width: 720px;
+	margin: 0 auto;
+	font-size: 1.125rem;
+	line-height: 1.75;
+}
+
+.cm-ia-editor .cm-scroller {
+	font-family:
+		"SF Mono", "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular,
+		Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.cm-ia-editor .cm-content {
+	padding: 0 24px;
+}
+
+.cm-ia-editor .cm-gutters {
+	background-color: transparent !important;
+	border-right: none !important;
+	padding-right: 12px;
+}
+
+.cm-ia-editor .cm-lineNumbers {
+	color: #9ca3af !important;
+	font-size: 0.875rem !important;
+	min-width: 32px !important;
+}
+
+.cm-ia-editor .cm-activeLineGutter {
+	background-color: transparent !important;
+}
+
+.cm-ia-editor .cm-activeLine {
+	background-color: rgba(59, 130, 246, 0.05) !important;
+}
+
+.cm-ia-editor .cm-cursor {
+	border-left: 2px solid #111827;
+}
+
+.cm-ia-editor .cm-focused {
+	outline: none;
+}
+
+.cm-ia-editor .cm-line {
+	padding: 0 2px;
 }
