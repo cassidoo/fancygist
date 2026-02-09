@@ -1,0 +1,10 @@
+# API redirects to Netlify functions
+/api/auth/login      /.netlify/functions/auth-login      200
+/api/auth/callback   /.netlify/functions/auth-callback   200
+/api/auth/user       /.netlify/functions/auth-user       200
+/api/auth/logout     /.netlify/functions/auth-logout     200
+/api/gists           /.netlify/functions/gists-create    200
+/api/gists/*         /.netlify/functions/gist-by-id      200
+
+# SPA fallback - must be last
+/*                   /index.html                         200

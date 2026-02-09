@@ -1,0 +1,45 @@
+{
+  "version": "5",
+  "remote": {
+    "https://edge.netlify.com/": "fd941d61d88673d5f28aab283fb86fcc50f08a3bc80ee5470498fcfa88c65cfb",
+    "https://edge.netlify.com/bootstrap/config.ts": "6a2ce0e544e15e8f8883a5c18da5948e37fd0f2619f68cb31f3af53c51817025",
+    "https://edge.netlify.com/bootstrap/context.ts": "e97240232121e2f369f6546ce961490f34d961ea1ea54be3ff09633e3f08373f",
+    "https://edge.netlify.com/bootstrap/cookie.ts": "8b0baae708989ca183c6f3b4ab3d029e6abcbc2e43f93edeb0ff447b3bbc3a05",
+    "https://edge.netlify.com/bootstrap/edge_function.ts": "b8253e86aa83c67341f5cfedeba5049d77fbf84dcab7eceff7566b7728ae9b39",
+    "https://edge.netlify.com/bootstrap/globals/types.ts": "eaa6148ded3121d8dee62dd91c86e7fe76601df0f3ca8d7962243a30f4c8935f"
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@codemirror/lang-markdown@^6.5.0",
+        "npm:@eslint/js@^9.39.1",
+        "npm:@tailwindcss/postcss@^4.1.18",
+        "npm:@tailwindcss/typography@~0.5.19",
+        "npm:@types/node@^24.10.1",
+        "npm:@types/react-dom@^19.2.3",
+        "npm:@types/react@^19.2.5",
+        "npm:@uiw/codemirror-theme-github@^4.25.4",
+        "npm:@uiw/react-codemirror@^4.25.4",
+        "npm:@vitejs/plugin-react@^5.1.1",
+        "npm:autoprefixer@^10.4.24",
+        "npm:eslint-plugin-react-hooks@^7.0.1",
+        "npm:eslint-plugin-react-refresh@~0.4.24",
+        "npm:eslint@^9.39.1",
+        "npm:globals@^16.5.0",
+        "npm:highlight.js@^11.11.1",
+        "npm:postcss@^8.5.6",
+        "npm:react-dom@^19.2.0",
+        "npm:react-markdown@^10.1.0",
+        "npm:react-router-dom@^7.13.0",
+        "npm:react@^19.2.0",
+        "npm:rehype-highlight@^7.0.2",
+        "npm:remark-gfm@^4.0.1",
+        "npm:tailwindcss@^4.1.18",
+        "npm:typescript-eslint@^8.46.4",
+        "npm:typescript@~5.9.3",
+        "npm:vite@^7.2.4",
+        "npm:zustand@^5.0.11"
+      ]
+    }
+  }
+}
