@@ -125,6 +125,18 @@ export default function EditorPage() {
     markDirty();
   };
 
+  const handleDownload = () => {
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   // Keyboard shortcuts
   useKeyboardShortcut('s', handleSave, { ctrl: true });
   useKeyboardShortcut('n', handleNew, { ctrl: true });
@@ -144,6 +156,7 @@ export default function EditorPage() {
         showEditButton={showEditButton}
         isOwner={isOwner || false}
         gistUrl={currentGistId && originalOwner ? `/@${originalOwner}/${currentGistId}` : null}
+        onDownload={handleDownload}
       />
       
       <div className="flex-1 overflow-hidden">
