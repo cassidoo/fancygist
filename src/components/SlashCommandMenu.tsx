@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export interface SlashCommand {
   label: string;
@@ -131,30 +132,44 @@ export default function SlashCommandMenu({
     }
   }, [selectedIndex]);
 
-  if (commands.length === 0) return null;
+  const show = commands.length > 0;
 
   return (
-    <div
-      ref={menuRef}
-      className="absolute bg-white border border-gray-200 rounded-lg shadow-lg py-2 max-h-64 overflow-y-auto z-50"
-      style={{
-        top: `${position.top}px`,
-        left: `${position.left}px`,
-        width: '240px',
-      }}
-    >
-      {commands.map((command, index) => (
-        <button
-          key={command.label}
-          onClick={() => onSelect(command)}
-          className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors ${
-            index === selectedIndex ? 'bg-blue-50 border-l-2 border-blue-500' : ''
-          }`}
+    <AnimatePresence>
+      {show && (
+        <div
+          style={{
+            position: 'absolute',
+            top: `${position.top}px`,
+            left: `${position.left}px`,
+            width: '240px',
+            perspective: 600,
+          }}
         >
-          <div className="font-medium text-sm text-gray-900">/{command.label}</div>
-          <div className="text-xs text-gray-500">{command.description}</div>
-        </button>
-      ))}
-    </div>
+        <motion.div
+          ref={menuRef}
+          className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 max-h-64 overflow-y-auto z-50"
+          style={{ transformOrigin: "top left" }}
+          initial={{ rotateY: -70, opacity: 0 }}
+          animate={{ rotateY: 0, opacity: 1 }}
+          exit={{ rotateY: -70, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+        >
+          {commands.map((command, index) => (
+            <button
+              key={command.label}
+              onClick={() => onSelect(command)}
+              className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors ${
+                index === selectedIndex ? 'bg-blue-50 border-l-2 border-blue-500' : ''
+              }`}
+            >
+              <div className="font-medium text-sm text-gray-900">/{command.label}</div>
+              <div className="text-xs text-gray-500">{command.description}</div>
+            </button>
+          ))}
+        </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }
