@@ -9,7 +9,7 @@ function App() {
 			<BrowserRouter>
 				<Routes>
 					<Route path="/" element={<EditorPage />} />
-					<Route path="/@:username/:gistId" element={<EditorPage />} />
+					<Route path="/:username/:gistId" element={<EditorPage />} />
 				</Routes>
 			</BrowserRouter>
 		</AuthProvider>

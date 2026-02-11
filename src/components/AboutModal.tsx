@@ -40,8 +40,8 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 							<p className="text-sm text-gray-600 mb-4">
 								Beautiful Markdown GitHub Gists.
 							</p>
-							<p className="text-xs text-gray-500">
-								How to use: <br />
+							<div className="text-xs text-gray-500">
+								<p>How to use:</p>
 								<ul className="list-disc list-inside mt-1 text-gray-500">
 									<li>Just start typing in markdown.</li>
 									<li>
@@ -54,7 +54,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 										copy the link to share it!
 									</li>
 								</ul>
-							</p>
+							</div>
 							<button
 								onClick={onClose}
 								className="mt-5 w-full py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"

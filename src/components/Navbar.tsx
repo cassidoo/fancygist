@@ -1,12 +1,13 @@
 import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
-import { Info, Plus, Save, Download, Eye, Pencil, Link } from "lucide-react";
+import { Info, Plus, Save, Download, Eye, Pencil, Link, FolderOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import IconButton from "./IconButton";
 import AboutModal from "./AboutModal";
 
 interface NavbarProps {
 	onNew: () => void;
+	onOpen: () => void;
 	onSave: () => void;
 	isSaving: boolean;
 	hasUnsavedChanges: boolean;
@@ -20,6 +21,7 @@ interface NavbarProps {
 
 export default function Navbar({
 	onNew,
+	onOpen,
 	onSave,
 	isSaving,
 	hasUnsavedChanges,
@@ -57,6 +59,14 @@ export default function Navbar({
 						/>
 
 						<IconButton icon={<Plus size={18} />} label="New" onClick={onNew} />
+
+						{user && (
+							<IconButton
+								icon={<FolderOpen size={18} />}
+								label="Open"
+								onClick={onOpen}
+							/>
+						)}
 
 						{showEditButton && (
 							<IconButton
