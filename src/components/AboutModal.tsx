@@ -38,7 +38,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 								About FancyGist
 							</h2>
 							<p className="text-sm text-gray-600 mb-4">
-								Beautiful GitHub Gists.
+								Beautiful Markdown GitHub Gists.
 							</p>
 							<p className="text-xs text-gray-500">
 								How to use: <br />
