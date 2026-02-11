@@ -1,5 +1,5 @@
 export const handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod !== 'GET') {
     return {
       statusCode: 405,
       body: JSON.stringify({ error: 'Method not allowed' }),
@@ -18,41 +18,39 @@ export const handler = async (event) => {
   }
 
   try {
-    const { description, files, public: isPublic } = JSON.parse(event.body || '{}');
-
     const response = await fetch('https://api.github.com/gists', {
-      method: 'POST',
       headers: {
         'Authorization': `token ${token}`,
         'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        description: description || 'Created with FancyGist',
-        public: isPublic !== false,
-        files,
-      }),
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to create gist');
+      throw new Error('Failed to fetch gists');
     }
 
-    const gist = await response.json();
+    const allGists = await response.json();
     
+    // Filter to only include gists with markdown files
+    const markdownGists = allGists.filter(gist => {
+      return Object.values(gist.files).some(file => 
+        file.filename.endsWith('.md') || file.filename.endsWith('.markdown')
+      );
+    });
+
+    // GitHub already returns gists sorted by updated_at descending
     return {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(gist),
+      body: JSON.stringify(markdownGists),
     };
   } catch (error) {
-    console.error('Create gist error:', error);
+    console.error('Fetch user gists error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message || 'Failed to create gist' }),
+      body: JSON.stringify({ error: 'Failed to fetch gists' }),
     };
   }
 };

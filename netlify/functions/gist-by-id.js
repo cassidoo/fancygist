@@ -1,4 +1,4 @@
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const pathParts = event.path.split('/');
   const id = pathParts[pathParts.length - 1];
 

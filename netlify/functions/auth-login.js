@@ -1,4 +1,4 @@
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const clientId = process.env.VITE_GITHUB_CLIENT_ID;
   const origin = event.headers.origin || event.headers.referer || 'http://localhost:8888';
   const baseUrl = origin.replace(/\/$/, '');

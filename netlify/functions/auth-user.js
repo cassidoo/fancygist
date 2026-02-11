@@ -1,4 +1,4 @@
-exports.handler = async (event) => {
+export const handler = async (event) => {
   const cookies = event.headers.cookie || '';
   const tokenMatch = cookies.match(/gh_token=([^;]+)/);
   const token = tokenMatch ? tokenMatch[1] : null;
