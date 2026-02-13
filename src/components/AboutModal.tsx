@@ -35,7 +35,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 							onClick={(e) => e.stopPropagation()}
 						>
 							<h2 className="text-xl font-semibold text-gray-900 mb-2">
-								About FancyGist
+								FancyGist
 							</h2>
 							<p className="text-sm text-gray-600 mb-4">
 								Beautiful Markdown GitHub Gists.
@@ -52,6 +52,35 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 									<li>
 										When you hit "save", your gist will be created and you can
 										copy the link to share it!
+									</li>
+									<li>
+										Use keyboard shortcuts for quick actions:
+										<ul className="list-disc list-inside mt-1 text-gray-500">
+											<li>
+												<code className="bg-gray-100 px-1 rounded">
+													Ctrl/Cmd + S
+												</code>{" "}
+												to save
+											</li>
+											<li>
+												<code className="bg-gray-100 px-1 rounded">
+													Ctrl/Cmd + Shift + K
+												</code>{" "}
+												for new gist
+											</li>
+											<li>
+												<code className="bg-gray-100 px-1 rounded">
+													Ctrl/Cmd + Shift + O
+												</code>{" "}
+												to open gist
+											</li>
+											<li>
+												<code className="bg-gray-100 px-1 rounded">
+													Ctrl/Cmd + Shift + P
+												</code>{" "}
+												to toggle preview
+											</li>
+										</ul>
 									</li>
 								</ul>
 							</div>

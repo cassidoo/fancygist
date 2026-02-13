@@ -18,9 +18,9 @@ export default function EditorPage() {
 	const [filename, setFilename] = useState("untitled.md");
 	const [isPreview, setIsPreview] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
-	const [saveFeedback, setSaveFeedback] = useState<"idle" | "success" | "error">(
-		"idle",
-	);
+	const [saveFeedback, setSaveFeedback] = useState<
+		"idle" | "success" | "error"
+	>("idle");
 	const [isOpenModalOpen, setIsOpenModalOpen] = useState(false);
 	const [currentGistId, setCurrentGistId] = useState<string | null>(
 		gistId || null,
@@ -180,7 +180,12 @@ export default function EditorPage() {
 
 	// Keyboard shortcuts
 	useKeyboardShortcut("s", handleSave, { ctrl: true });
-	useKeyboardShortcut("n", handleNew, { ctrl: true });
+	useKeyboardShortcut("k", handleNew, { ctrl: true, shift: true });
+	useKeyboardShortcut("o", handleOpenGist, { ctrl: true, shift: true });
+	useKeyboardShortcut("p", () => setIsPreview((prev) => !prev), {
+		ctrl: true,
+		shift: true,
+	});
 
 	const isOwner = user && originalOwner === user.login;
 
