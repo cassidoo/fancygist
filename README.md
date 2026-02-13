@@ -9,8 +9,8 @@ A beautiful, minimal markdown editor backed by GitHub Gists. Write, share, and e
 - 🔗 **Shareable URLs**: Share docs at `fancygist.com/@username/gist-id`
 - 📝 **GitHub Flavored Markdown**: Full support for tables, code blocks, task lists, and more
 - 🎯 **Syntax Highlighting**: Beautiful code highlighting in previews
-- 🍴 **Fork on Edit**: Edit someone else's gist? It creates a fork automatically
-- ⌨️ **Keyboard Shortcuts**: `Ctrl/Cmd+S` to save, `Ctrl/Cmd+N` for new
+- 🍴 **Fork on Edit**: Edit someone else's gist? It creates a fork automatically when you save it.
+- ⌨️ **Keyboard Shortcuts**: `Ctrl/Cmd+S` to save, `Ctrl/Cmd+N` for new.
 
 ## Getting Started
 
@@ -23,12 +23,14 @@ A beautiful, minimal markdown editor backed by GitHub Gists. Write, share, and e
 ### Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/fancygist.git
    cd fancygist
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
@@ -44,22 +46,26 @@ A beautiful, minimal markdown editor backed by GitHub Gists. Write, share, and e
    - Copy the Client ID and generate a Client Secret
 
 4. **Configure environment variables**
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Edit `.env` and add your GitHub OAuth credentials:
+
    ```
    VITE_GITHUB_CLIENT_ID=your_client_id_here
    GITHUB_CLIENT_SECRET=your_client_secret_here
    ```
 
 5. **Run the development server**
+
    ```bash
    npm run dev
    ```
-   
+
    Or with Netlify CLI for full API support:
+
    ```bash
    npm install -g netlify-cli
    netlify dev
@@ -80,21 +86,25 @@ A beautiful, minimal markdown editor backed by GitHub Gists. Write, share, and e
 ### Deploy to Netlify
 
 1. **Install Netlify CLI**
+
    ```bash
    npm install -g netlify-cli
    ```
 
 2. **Login to Netlify**
+
    ```bash
    netlify login
    ```
 
 3. **Deploy**
+
    ```bash
    netlify deploy
    ```
-   
+
    For production:
+
    ```bash
    netlify deploy --prod
    ```
@@ -150,13 +160,14 @@ fancygist/
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome:
 
-## License
-
-MIT License - feel free to use this project however you'd like!
+- Make sure there's an Issue first
+- Use tabs instead of spaces
+- Follow existing code style
+- If you're going to use AI, please review the generated code carefully before submitting, don't keep unnecessary comments, and use your brain.
 
 ## Acknowledgments
 
-- Inspired by [Stashpad Docs](https://stashpad.com) and [iA Writer](https://ia.net/writer)
+- Inspired by [Stashpad Docs](https://www.youtube.com/watch?v=9miuaDK0uF8) and [iA Writer](https://ia.net/writer)
 - Built with ❤️ using GitHub's amazing Gist API
