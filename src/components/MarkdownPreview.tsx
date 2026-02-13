@@ -2,6 +2,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/rose-pine-dawn.css";
+// @ts-ignore
 import markdownPuns from "../utils/techPuns";
 
 interface MarkdownPreviewProps {

@@ -40,7 +40,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 							<p className="text-sm text-gray-600 mb-4">
 								Beautiful Markdown GitHub Gists.
 							</p>
-							<div className="text-xs text-gray-500">
+							<div className="text-xs text-gray-500 mb-4">
 								<p>How to use:</p>
 								<ul className="list-disc list-inside mt-1 text-gray-500">
 									<li>Just start typing in markdown.</li>
@@ -83,6 +83,18 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 										</ul>
 									</li>
 								</ul>
+							</div>
+							<div className="text-xs text-gray-500 mb-4">
+								FancyGist is open source!{" "}
+								<a
+									href="https://github.com/cassidoo/fancygist"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="text-lime-700 hover:underline"
+								>
+									Star the repo
+								</a>{" "}
+								or support the project if you find it useful!
 							</div>
 							<button
 								onClick={onClose}
