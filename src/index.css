@@ -68,3 +68,13 @@ body {
 .cm-ia-editor .cm-line {
 	padding: 0 2px;
 }
+
+.markdown-preview pre {
+	background-color: transparent;
+	padding: 0;
+}
+
+.markdown-preview pre code.hljs {
+	border-radius: 0.375rem;
+	font-size: 1.2em;
+}

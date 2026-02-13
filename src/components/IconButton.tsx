@@ -12,7 +12,7 @@ interface IconButtonProps {
 
 const ICON_SIZE = 36;
 const GAP = 6;
-const PAD_RIGHT = 14;
+const PAD_RIGHT = 10;
 
 export default function IconButton({
 	icon,
@@ -42,7 +42,7 @@ export default function IconButton({
 
 	const variantClasses =
 		variant === "primary"
-			? "bg-blue-600 text-white hover:bg-blue-700"
+			? "bg-lime-600 text-white hover:bg-lime-700"
 			: "text-gray-700 hover:bg-gray-100";
 
 	const spring = { type: "spring" as const, stiffness: 500, damping: 30 };

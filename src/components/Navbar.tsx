@@ -1,6 +1,17 @@
 import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
-import { Info, Plus, Save, Download, Eye, Pencil, Link, FolderOpen } from "lucide-react";
+import {
+	Info,
+	Plus,
+	Save,
+	Check,
+	X,
+	Download,
+	Eye,
+	Pencil,
+	Link,
+	FolderOpen,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import IconButton from "./IconButton";
 import AboutModal from "./AboutModal";
@@ -10,10 +21,10 @@ interface NavbarProps {
 	onOpen: () => void;
 	onSave: () => void;
 	isSaving: boolean;
+	saveFeedback: "idle" | "success" | "error";
 	hasUnsavedChanges: boolean;
 	isPreview: boolean;
 	onTogglePreview: () => void;
-	showEditButton: boolean;
 	isOwner: boolean;
 	gistUrl: string | null;
 	onDownload: () => void;
@@ -24,10 +35,10 @@ export default function Navbar({
 	onOpen,
 	onSave,
 	isSaving,
+	saveFeedback,
 	hasUnsavedChanges,
 	isPreview,
 	onTogglePreview,
-	showEditButton,
 	gistUrl,
 	onDownload,
 }: NavbarProps) {
@@ -46,6 +57,16 @@ export default function Navbar({
 	const saveLabel = isSaving
 		? "Saving…"
 		: `Save${hasUnsavedChanges ? " *" : ""}`;
+	const saveIconKey = isSaving ? "saving" : saveFeedback;
+	const saveIcon = isSaving ? (
+		<Save size={18} />
+	) : saveFeedback === "success" ? (
+		<Check size={18} />
+	) : saveFeedback === "error" ? (
+		<X size={18} />
+	) : (
+		<Save size={18} />
+	);
 
 	return (
 		<>
@@ -68,13 +89,11 @@ export default function Navbar({
 							/>
 						)}
 
-						{showEditButton && (
-							<IconButton
-								icon={isPreview ? <Pencil size={18} /> : <Eye size={18} />}
-								label={isPreview ? "Edit" : "Preview"}
-								onClick={onTogglePreview}
-							/>
-						)}
+						<IconButton
+							icon={isPreview ? <Pencil size={18} /> : <Eye size={18} />}
+							label={isPreview ? "Edit" : "Preview"}
+							onClick={onTogglePreview}
+						/>
 
 						{gistUrl && (
 							<IconButton
@@ -89,11 +108,27 @@ export default function Navbar({
 						{user && !isPreview && (
 							<>
 								<IconButton
-									icon={<Save size={18} />}
+									icon={
+										<AnimatePresence mode="wait" initial={false}>
+											<motion.span
+												key={saveIconKey}
+												initial={{ opacity: 0 }}
+												animate={{ opacity: 1 }}
+												exit={{ opacity: 0 }}
+												transition={{ duration: 0.2 }}
+												className="flex items-center justify-center"
+											>
+												{saveIcon}
+											</motion.span>
+										</AnimatePresence>
+									}
 									label={saveLabel}
 									onClick={onSave}
 									disabled={isSaving}
 									variant="primary"
+									className={
+										hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500"
+									}
 								/>
 								<IconButton
 									icon={<Download size={18} />}
@@ -146,20 +181,20 @@ export default function Navbar({
 													Logged in as {user.login}
 												</div>
 												<a
-													href={`https://github.com/${user.login}`}
-													target="_blank"
-													rel="noopener noreferrer"
-													className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-												>
-													Your GitHub
-												</a>
-												<a
 													href={`https://gist.github.com/${user.login}`}
 													target="_blank"
 													rel="noopener noreferrer"
 													className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
 												>
 													Your Gists
+												</a>
+												<a
+													href={`https://github.com/${user.login}`}
+													target="_blank"
+													rel="noopener noreferrer"
+													className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+												>
+													Your GitHub
 												</a>
 												<button
 													onClick={() => {

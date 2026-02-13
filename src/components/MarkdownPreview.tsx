@@ -1,7 +1,8 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import "highlight.js/styles/github.css";
+import "highlight.js/styles/rose-pine-dawn.css";
+import markdownPuns from "../utils/techPuns";
 
 interface MarkdownPreviewProps {
 	content: string;
@@ -10,12 +11,12 @@ interface MarkdownPreviewProps {
 export default function MarkdownPreview({ content }: MarkdownPreviewProps) {
 	return (
 		<div className="h-full overflow-auto bg-white">
-			<article className="prose prose-sm max-w-3xl mx-auto px-6 py-16">
+			<article className="markdown-preview prose prose-sm max-w-3xl mx-auto px-6 py-16">
 				<ReactMarkdown
 					remarkPlugins={[remarkGfm]}
 					rehypePlugins={[rehypeHighlight]}
 				>
-					{content || "*No content yet. Click Edit to start writing.*"}
+					{content || `**Nothing here yet!**\n\n${markdownPuns()}`}
 				</ReactMarkdown>
 			</article>
 		</div>

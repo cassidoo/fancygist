@@ -18,6 +18,9 @@ export default function EditorPage() {
 	const [filename, setFilename] = useState("untitled.md");
 	const [isPreview, setIsPreview] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
+	const [saveFeedback, setSaveFeedback] = useState<"idle" | "success" | "error">(
+		"idle",
+	);
 	const [isOpenModalOpen, setIsOpenModalOpen] = useState(false);
 	const [currentGistId, setCurrentGistId] = useState<string | null>(
 		gistId || null,
@@ -40,6 +43,12 @@ export default function EditorPage() {
 	useEffect(() => {
 		return setupBeforeUnload();
 	}, [setupBeforeUnload]);
+
+	useEffect(() => {
+		if (saveFeedback === "idle") return;
+		const timeoutId = window.setTimeout(() => setSaveFeedback("idle"), 1200);
+		return () => window.clearTimeout(timeoutId);
+	}, [saveFeedback]);
 
 	const loadGist = async (id: string) => {
 		try {
@@ -71,6 +80,7 @@ export default function EditorPage() {
 			return;
 		}
 
+		setSaveFeedback("idle");
 		setIsSaving(true);
 		try {
 			const isOwner = originalOwner === user.login;
@@ -100,11 +110,13 @@ export default function EditorPage() {
 			setCurrentGistId(savedGist.id);
 			setOriginalOwner(user.login);
 			markClean();
+			setSaveFeedback("success");
 
 			// Update URL without reload
 			window.history.pushState({}, "", `/@${user.login}/${savedGist.id}`);
 		} catch (error) {
 			console.error("Error saving gist:", error);
+			setSaveFeedback("error");
 			alert("Failed to save gist");
 		} finally {
 			setIsSaving(false);
@@ -171,7 +183,6 @@ export default function EditorPage() {
 	useKeyboardShortcut("n", handleNew, { ctrl: true });
 
 	const isOwner = user && originalOwner === user.login;
-	const showEditButton = !!(isPreview && currentGistId);
 
 	return (
 		<div className="h-screen flex flex-col">
@@ -180,10 +191,10 @@ export default function EditorPage() {
 				onOpen={handleOpenGist}
 				onSave={handleSave}
 				isSaving={isSaving}
+				saveFeedback={saveFeedback}
 				hasUnsavedChanges={hasUnsavedChanges}
 				isPreview={isPreview}
 				onTogglePreview={() => setIsPreview(!isPreview)}
-				showEditButton={showEditButton}
 				isOwner={isOwner || false}
 				gistUrl={
 					currentGistId && originalOwner
