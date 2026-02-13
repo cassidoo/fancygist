@@ -75,7 +75,9 @@ export default function EditorPage() {
 		try {
 			const isOwner = originalOwner === user.login;
 			const endpoint =
-				currentGistId && isOwner ? `/api/gists/${currentGistId}` : "/api/gists";
+				currentGistId && isOwner
+					? `/api/gists/${currentGistId}`
+					: "/api/gists/create";
 
 			const method = currentGistId && isOwner ? "PATCH" : "POST";
 

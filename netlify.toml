@@ -34,6 +34,11 @@
   status = 200
 
 [[redirects]]
+  from = "/api/gists/create"
+  to = "/.netlify/functions/gists-create"
+  status = 200
+
+[[redirects]]
   from = "/api/gists"
   to = "/.netlify/functions/gists-create"
   status = 200
