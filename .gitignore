@@ -17,7 +17,7 @@ dist-ssr
 .env.local
 .env.*.local
 
-# Editor directories and files
+# Directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -27,9 +27,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# Vercel
-.vercel
+*.afdesign
 
 # Netlify
 .netlify
