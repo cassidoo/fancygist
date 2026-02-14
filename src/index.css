@@ -79,7 +79,7 @@ body {
 	font-size: 1.2em;
 }
 
-.cm-ia-editor .cm-cursor {
+.cm-ia-editor .cm-cursor-primary {
 	anchor-name: --slash-command-anchor;
 }
 
