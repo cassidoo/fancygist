@@ -10,6 +10,7 @@ import SlashCommandMenu, {
 	slashCommands,
 	type SlashCommand,
 } from "./SlashCommandMenu";
+import { useCodeMirrorListboxAriaAttributes } from "../hooks/useCodeMirrorListboxAriaAttributes";
 
 interface EditorProps {
 	value: string;
@@ -33,6 +34,12 @@ export default function Editor({ value, onChange }: EditorProps) {
 	const filteredCommands = slashCommands.filter((cmd) =>
 		cmd.label.toLowerCase().includes(searchQuery.toLowerCase()),
 	);
+	const { extension: listboxAriaExtension, listboxId, getOptionId } =
+		useCodeMirrorListboxAriaAttributes({
+			editorRef,
+			open: showMenu && filteredCommands.length > 0,
+			activeOptionIndex: filteredCommands[selectedIndex] ? selectedIndex : undefined,
+		});
 
 	useEffect(() => {
 		showMenuRef.current = showMenu;
@@ -163,6 +170,7 @@ export default function Editor({ value, onChange }: EditorProps) {
 				theme={githubLight}
 				extensions={[
 					slashCommandKeymap,
+					listboxAriaExtension,
 					markdown({ codeLanguages: languages }),
 					EditorView.lineWrapping,
 				]}
@@ -182,6 +190,8 @@ export default function Editor({ value, onChange }: EditorProps) {
 					commands={filteredCommands}
 					selectedIndex={selectedIndex}
 					position={menuPosition}
+					listboxId={listboxId}
+					getOptionId={getOptionId}
 					onSelect={(cmd) => doInsert(cmd)}
 					onClose={() => setShowMenu(false)}
 				/>
