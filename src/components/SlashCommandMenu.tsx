@@ -99,7 +99,6 @@ export const slashCommands: SlashCommand[] = [
 interface SlashCommandMenuProps {
 	commands: SlashCommand[];
 	selectedIndex: number;
-	position: { top: number; left: number };
 	onSelect: (command: SlashCommand) => void;
 	onClose: () => void;
 }
@@ -107,7 +106,6 @@ interface SlashCommandMenuProps {
 export default function SlashCommandMenu({
 	commands,
 	selectedIndex,
-	position,
 	onSelect,
 	onClose,
 }: SlashCommandMenuProps) {
@@ -141,18 +139,10 @@ export default function SlashCommandMenu({
 	return (
 		<AnimatePresence>
 			{show && (
-				<div
-					style={{
-						position: "absolute",
-						top: `${position.top}px`,
-						left: `${position.left}px`,
-						width: "240px",
-						perspective: 600,
-					}}
-				>
+				<div className="slash-command-menu-positioner fixed w-60 max-w-fit h-min [perspective:600px]">
 					<motion.div
 						ref={menuRef}
-						className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 max-h-64 overflow-y-auto z-50"
+						className="slash-command-menu bg-white border border-gray-200 rounded-lg shadow-lg py-2 max-h-64 max-w-64 overflow-y-auto z-50"
 						style={{ transformOrigin: "top left" }}
 						initial={{ rotateY: -70, opacity: 0 }}
 						animate={{ rotateY: 0, opacity: 1 }}

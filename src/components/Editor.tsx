@@ -18,9 +18,7 @@ interface EditorProps {
 
 export default function Editor({ value, onChange }: EditorProps) {
 	const editorRef = useRef<ReactCodeMirrorRef>(null);
-	const containerRef = useRef<HTMLDivElement>(null);
 	const [showMenu, setShowMenu] = useState(false);
-	const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const slashStartPosRef = useRef(0);
@@ -136,26 +134,14 @@ export default function Editor({ value, onChange }: EditorProps) {
 			setSearchQuery(slashMatch[1]);
 			slashStartPosRef.current = lineStart;
 			setSelectedIndex(0);
-
-			const coords = view.coordsAtPos(cursorPos);
-			if (coords && containerRef.current) {
-				const containerRect = containerRef.current.getBoundingClientRect();
-				setMenuPosition({
-					top: coords.bottom - containerRect.top,
-					left: coords.left - containerRect.left,
-				});
-				setShowMenu(true);
-			}
+			setShowMenu(true);
 		} else {
 			setShowMenu(false);
 		}
 	};
 
 	return (
-		<div
-			ref={containerRef}
-			className="h-full w-full overflow-auto bg-white relative"
-		>
+		<div className="h-full w-full overflow-auto bg-white relative">
 			<CodeMirror
 				ref={editorRef}
 				value={value}
@@ -181,7 +167,6 @@ export default function Editor({ value, onChange }: EditorProps) {
 				<SlashCommandMenu
 					commands={filteredCommands}
 					selectedIndex={selectedIndex}
-					position={menuPosition}
 					onSelect={(cmd) => doInsert(cmd)}
 					onClose={() => setShowMenu(false)}
 				/>
