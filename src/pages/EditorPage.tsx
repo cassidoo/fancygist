@@ -87,7 +87,7 @@ export default function EditorPage() {
 			const endpoint =
 				currentGistId && isOwner
 					? `/api/gists/${currentGistId}`
-					: "/api/gists/create";
+					: "/api/gist-create";
 
 			const method = currentGistId && isOwner ? "PATCH" : "POST";
 
