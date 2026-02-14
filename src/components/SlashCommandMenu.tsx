@@ -142,7 +142,7 @@ export default function SlashCommandMenu({
 				<div className="slash-command-menu-positioner fixed w-60 max-w-fit h-min [perspective:600px]">
 					<motion.div
 						ref={menuRef}
-						className="slash-command-menu bg-white border border-gray-200 rounded-lg shadow-lg py-2 max-h-64 max-w-64 overflow-y-auto z-50"
+						className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 max-h-64 max-w-64 overflow-y-auto z-50"
 						style={{ transformOrigin: "top left" }}
 						initial={{ rotateY: -70, opacity: 0 }}
 						animate={{ rotateY: 0, opacity: 1 }}
