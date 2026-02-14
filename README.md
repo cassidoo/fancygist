@@ -1,5 +1,7 @@
 # FancyGist
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d586125f-bdcb-4642-8227-3a93d6b53c37/deploy-status)](https://app.netlify.com/projects/fancygist/deploys)
+
 A beautiful, minimal markdown editor backed by GitHub Gists. Write, share, and edit markdown documents with a clean interface and the power of GitHub's gist platform.
 
 ## Features
