@@ -223,7 +223,6 @@ export default function EditorPage() {
 			return;
 		}
 
-		// Collect all stylesheets from the current page
 		const styleSheets = Array.from(document.styleSheets);
 		let cssText = "";
 		for (const sheet of styleSheets) {
@@ -231,7 +230,6 @@ export default function EditorPage() {
 				const rules = Array.from(sheet.cssRules);
 				cssText += rules.map((rule) => rule.cssText).join("\n");
 			} catch {
-				// Cross-origin sheets: link them instead
 				if (sheet.href) {
 					cssText += `@import url("${sheet.href}");\n`;
 				}
@@ -241,13 +239,26 @@ export default function EditorPage() {
 		printWindow.document.write(`<!DOCTYPE html>
 <html>
 <head>
-	<title>${getBaseFilename()}</title>
+	<title> </title>
 	<style>${cssText}</style>
 	<style>
-		@page { margin: 0; }
+		@page { margin: 5mm 12mm; }
 		@media print {
-			body { margin: 0; padding: 12mm 10mm; }
-			.markdown-preview { padding: 0; }
+			body { margin: 0; padding: 10mm; }
+			.markdown-preview {
+				padding: 0;
+				max-width: none;
+			}
+			h1, h2, h3, h4, h5, h6 {
+				break-after: avoid;
+			}
+			pre, code, blockquote, table, img, figure {
+				break-inside: avoid;
+			}
+			p, li {
+				orphans: 3;
+				widows: 3;
+			}
 		}
 	</style>
 </head>
