@@ -1,5 +1,5 @@
 import { useAuth } from "../contexts/AuthContext";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
 	Info,
 	Plus,
@@ -31,6 +31,82 @@ interface NavbarProps {
 	onDownloadMarkdown: () => void;
 	onDownloadHtml: () => void;
 	onDownloadPdf: () => void;
+}
+
+const ICON_SIZE = 36;
+const CARET_SIZE = 30;
+const GAP = 6;
+const PAD_RIGHT = 4;
+
+function SplitDownloadButton({
+	onDownloadMarkdown,
+	onOpenMenu,
+	menuOpen,
+}: {
+	onDownloadMarkdown: () => void;
+	onOpenMenu: () => void;
+	menuOpen: boolean;
+}) {
+	const [hovered, setHovered] = useState(false);
+	const labelRef = useRef<HTMLSpanElement>(null);
+	const [labelWidth, setLabelWidth] = useState(0);
+
+	useEffect(() => {
+		if (labelRef.current) {
+			setLabelWidth(labelRef.current.scrollWidth);
+		}
+	}, []);
+
+	const expanded = hovered || menuOpen;
+	const targetWidth = expanded
+		? ICON_SIZE + GAP + labelWidth + PAD_RIGHT + CARET_SIZE
+		: ICON_SIZE;
+
+	const spring = { type: "spring" as const, stiffness: 500, damping: 30 };
+
+	return (
+		<motion.div
+			className={`inline-flex items-center justify-between h-9 rounded-full overflow-hidden text-gray-700 hover:bg-gray-100 ${expanded ? "bg-gray-100" : ""}`}
+			onMouseEnter={() => setHovered(true)}
+			onMouseLeave={() => setHovered(false)}
+			animate={{ width: targetWidth }}
+			transition={spring}
+			style={{ minWidth: ICON_SIZE }}
+		>
+			<button
+				onClick={onDownloadMarkdown}
+				className="inline-flex items-center justify-between h-9 cursor-pointer"
+				title="Download"
+			>
+				<span className="flex-shrink-0 flex items-center justify-center w-9 h-9">
+					<Download size={18} />
+				</span>
+				<motion.span
+					ref={labelRef}
+					className="text-sm font-medium whitespace-nowrap mr-2"
+					animate={{ opacity: expanded ? 1 : 0 }}
+					transition={{ duration: expanded ? 0.15 : 0.1 }}
+				>
+					Download
+				</motion.span>
+			</button>
+			<motion.button
+				onClick={(e) => {
+					e.stopPropagation();
+					onOpenMenu();
+				}}
+				className={`flex-shrink-0 flex items-center justify-center h-9 w-7 border-l border-gray-200 cursor-pointer hover:bg-gray-200 ${menuOpen ? "bg-gray-200" : ""}`}
+				animate={{
+					opacity: expanded ? 1 : 0,
+					width: expanded ? CARET_SIZE : 0,
+				}}
+				transition={spring}
+				aria-label="More download options"
+			>
+				<ChevronDown size={14} />
+			</motion.button>
+		</motion.div>
+	);
 }
 
 export default function Navbar({
@@ -131,28 +207,19 @@ export default function Navbar({
 								onClick={onSave}
 								disabled={isSaving}
 								variant="primary"
-								className={hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500"}
+								className={
+									hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500"
+								}
 							/>
 						)}
 
 						{user && (
 							<div className="relative">
-								<div className="flex items-center">
-									<button
-										onClick={onDownloadMarkdown}
-										className="inline-flex items-center gap-2 h-9 px-3 rounded-l-full text-sm font-medium text-gray-700 hover:bg-gray-100 cursor-pointer"
-									>
-										<Download size={18} />
-										<span>Download</span>
-									</button>
-									<button
-										onClick={() => setIsDownloadMenuOpen((prev) => !prev)}
-										className="inline-flex items-center justify-center h-9 w-9 rounded-r-full text-gray-700 hover:bg-gray-100 border-l border-gray-200 cursor-pointer"
-										aria-label="More download options"
-									>
-										<ChevronDown size={16} />
-									</button>
-								</div>
+								<SplitDownloadButton
+									onDownloadMarkdown={onDownloadMarkdown}
+									onOpenMenu={() => setIsDownloadMenuOpen((prev) => !prev)}
+									menuOpen={isDownloadMenuOpen}
+								/>
 
 								{isDownloadMenuOpen && (
 									<>
