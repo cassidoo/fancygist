@@ -78,3 +78,15 @@ body {
 	border-radius: 0.375rem;
 	font-size: 1.2em;
 }
+
+.cm-ia-editor .cm-cursor-primary {
+	anchor-name: --slash-command-anchor;
+}
+
+.slash-command-menu-positioner {
+	position-anchor: --slash-command-anchor;
+	position-visibility: always;
+	top: calc(anchor(bottom) + 8px);
+	left: anchor(left);
+	position-try-fallbacks: flip-block;
+}
