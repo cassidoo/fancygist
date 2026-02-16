@@ -11,6 +11,7 @@ import {
 	Pencil,
 	Link,
 	FolderOpen,
+	ChevronDown,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import IconButton from "./IconButton";
@@ -27,7 +28,9 @@ interface NavbarProps {
 	onTogglePreview: () => void;
 	isOwner: boolean;
 	gistUrl: string | null;
-	onDownload: () => void;
+	onDownloadMarkdown: () => void;
+	onDownloadHtml: () => void;
+	onDownloadPdf: () => void;
 }
 
 export default function Navbar({
@@ -40,10 +43,13 @@ export default function Navbar({
 	isPreview,
 	onTogglePreview,
 	gistUrl,
-	onDownload,
+	onDownloadMarkdown,
+	onDownloadHtml,
+	onDownloadPdf,
 }: NavbarProps) {
 	const { user, login, logout } = useAuth();
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
 	const [isAboutOpen, setIsAboutOpen] = useState(false);
 
 	const copyShareLink = () => {
@@ -106,36 +112,77 @@ export default function Navbar({
 
 					<div className="flex items-center gap-2">
 						{user && !isPreview && (
-							<>
-								<IconButton
-									icon={
-										<AnimatePresence mode="wait" initial={false}>
-											<motion.span
-												key={saveIconKey}
-												initial={{ opacity: 0 }}
-												animate={{ opacity: 1 }}
-												exit={{ opacity: 0 }}
-												transition={{ duration: 0.2 }}
-												className="flex items-center justify-center"
+							<IconButton
+								icon={
+									<AnimatePresence mode="wait" initial={false}>
+										<motion.span
+											key={saveIconKey}
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											transition={{ duration: 0.2 }}
+											className="flex items-center justify-center"
+										>
+											{saveIcon}
+										</motion.span>
+									</AnimatePresence>
+								}
+								label={saveLabel}
+								onClick={onSave}
+								disabled={isSaving}
+								variant="primary"
+								className={hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500"}
+							/>
+						)}
+
+						{user && (
+							<div className="relative">
+								<div className="flex items-center">
+									<button
+										onClick={onDownloadMarkdown}
+										className="inline-flex items-center gap-2 h-9 px-3 rounded-l-full text-sm font-medium text-gray-700 hover:bg-gray-100 cursor-pointer"
+									>
+										<Download size={18} />
+										<span>Download</span>
+									</button>
+									<button
+										onClick={() => setIsDownloadMenuOpen((prev) => !prev)}
+										className="inline-flex items-center justify-center h-9 w-9 rounded-r-full text-gray-700 hover:bg-gray-100 border-l border-gray-200 cursor-pointer"
+										aria-label="More download options"
+									>
+										<ChevronDown size={16} />
+									</button>
+								</div>
+
+								{isDownloadMenuOpen && (
+									<>
+										<div
+											className="fixed inset-0 z-10"
+											onClick={() => setIsDownloadMenuOpen(false)}
+										/>
+										<div className="absolute right-0 z-20 mt-2 w-44 bg-white rounded-md shadow-md py-1 border border-gray-200">
+											<button
+												onClick={() => {
+													setIsDownloadMenuOpen(false);
+													onDownloadHtml();
+												}}
+												className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
 											>
-												{saveIcon}
-											</motion.span>
-										</AnimatePresence>
-									}
-									label={saveLabel}
-									onClick={onSave}
-									disabled={isSaving}
-									variant="primary"
-									className={
-										hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500"
-									}
-								/>
-								<IconButton
-									icon={<Download size={18} />}
-									label="Download"
-									onClick={onDownload}
-								/>
-							</>
+												Download as HTML
+											</button>
+											<button
+												onClick={() => {
+													setIsDownloadMenuOpen(false);
+													onDownloadPdf();
+												}}
+												className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+											>
+												Download as PDF
+											</button>
+										</div>
+									</>
+								)}
+							</div>
 						)}
 
 						{user ? (

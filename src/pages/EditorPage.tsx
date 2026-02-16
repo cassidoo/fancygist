@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import Editor from "../components/Editor";
 import MarkdownPreview from "../components/MarkdownPreview";
 import Navbar from "../components/Navbar";
@@ -143,15 +145,93 @@ export default function EditorPage() {
 	};
 
 	const handleDownload = () => {
+		const markdownFilename =
+			filename.endsWith(".md") || filename.endsWith(".markdown")
+				? filename
+				: `${filename}.md`;
 		const blob = new Blob([content], { type: "text/markdown" });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		a.download = filename;
+		a.download = markdownFilename;
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
+	};
+
+	const getPreviewElement = () =>
+		document.querySelector(".markdown-preview") as HTMLElement | null;
+
+	const getBaseFilename = () =>
+		filename.replace(/\.(md|markdown)$/i, "") || "untitled";
+
+	const handleDownloadHtml = () => {
+		const previewElement = getPreviewElement();
+		if (!previewElement) {
+			alert("Switch to Preview mode to download HTML.");
+			return;
+		}
+
+		const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>${getBaseFilename()}</title>
+</head>
+<body>
+	<article>${previewElement.innerHTML}</article>
+</body>
+</html>`;
+
+		const blob = new Blob([htmlContent], { type: "text/html" });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = `${getBaseFilename()}.html`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	};
+
+	const handleDownloadPdf = async () => {
+		const previewElement = getPreviewElement();
+		if (!previewElement) {
+			alert("Switch to Preview mode to download PDF.");
+			return;
+		}
+
+		try {
+			const canvas = await html2canvas(previewElement, {
+				scale: 2,
+				backgroundColor: "#ffffff",
+			});
+			const imageData = canvas.toDataURL("image/png");
+			const pdf = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
+			const pageWidth = pdf.internal.pageSize.getWidth();
+			const pageHeight = pdf.internal.pageSize.getHeight();
+			const imageWidth = pageWidth;
+			const imageHeight = (canvas.height * imageWidth) / canvas.width;
+			let heightLeft = imageHeight;
+			let position = 0;
+
+			pdf.addImage(imageData, "PNG", 0, position, imageWidth, imageHeight);
+			heightLeft -= pageHeight;
+
+			while (heightLeft > 0) {
+				position -= pageHeight;
+				pdf.addPage();
+				pdf.addImage(imageData, "PNG", 0, position, imageWidth, imageHeight);
+				heightLeft -= pageHeight;
+			}
+
+			pdf.save(`${getBaseFilename()}.pdf`);
+		} catch (error) {
+			console.error("Failed to download PDF:", error);
+			alert("Failed to download PDF");
+		}
 	};
 
 	const handleOpenGist = () => {
@@ -206,7 +286,9 @@ export default function EditorPage() {
 						? `/@${originalOwner}/${currentGistId}`
 						: null
 				}
-				onDownload={handleDownload}
+				onDownloadMarkdown={handleDownload}
+				onDownloadHtml={handleDownloadHtml}
+				onDownloadPdf={handleDownloadPdf}
 			/>
 
 			<OpenGistModal
