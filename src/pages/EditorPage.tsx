@@ -143,15 +143,135 @@ export default function EditorPage() {
 	};
 
 	const handleDownload = () => {
+		const markdownFilename =
+			filename.endsWith(".md") || filename.endsWith(".markdown")
+				? filename
+				: `${filename}.md`;
 		const blob = new Blob([content], { type: "text/markdown" });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		a.download = filename;
+		a.download = markdownFilename;
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
+	};
+
+	const getPreviewElement = () =>
+		document.querySelector(".markdown-preview") as HTMLElement | null;
+
+	const waitForPreviewElement = async () => {
+		for (let i = 0; i < 10; i += 1) {
+			const previewElement = getPreviewElement();
+			if (previewElement) return previewElement;
+			await new Promise<void>((resolve) => {
+				window.requestAnimationFrame(() => resolve());
+			});
+		}
+		return null;
+	};
+
+	const getBaseFilename = () =>
+		filename.replace(/\.(md|markdown)$/i, "") || "untitled";
+
+	const handleDownloadHtml = () => {
+		const previewElement = getPreviewElement();
+		if (!previewElement) {
+			alert("Switch to Preview mode to download HTML.");
+			return;
+		}
+
+		const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>${getBaseFilename()}</title>
+</head>
+<body>
+	<article>${previewElement.innerHTML}</article>
+</body>
+</html>`;
+
+		const blob = new Blob([htmlContent], { type: "text/html" });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = `${getBaseFilename()}.html`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	};
+
+	const handleDownloadPdf = async () => {
+		let previewElement = getPreviewElement();
+		if (!previewElement) {
+			setIsPreview(true);
+			previewElement = await waitForPreviewElement();
+		}
+
+		if (!previewElement) {
+			alert("Unable to render preview for PDF download.");
+			return;
+		}
+
+		const printWindow = window.open("", "_blank");
+		if (!printWindow) {
+			alert("Please allow popups to download PDF.");
+			return;
+		}
+
+		const styleSheets = Array.from(document.styleSheets);
+		let cssText = "";
+		for (const sheet of styleSheets) {
+			try {
+				const rules = Array.from(sheet.cssRules);
+				cssText += rules.map((rule) => rule.cssText).join("\n");
+			} catch {
+				if (sheet.href) {
+					cssText += `@import url("${sheet.href}");\n`;
+				}
+			}
+		}
+
+		printWindow.document.write(`<!DOCTYPE html>
+<html>
+<head>
+	<title> </title>
+	<style>${cssText}</style>
+	<style>
+		@page { margin: 5mm 12mm; }
+		@media print {
+			body { margin: 0; padding: 10mm; }
+			.markdown-preview {
+				padding: 0;
+				max-width: none;
+			}
+			h1, h2, h3, h4, h5, h6 {
+				break-after: avoid;
+			}
+			pre, code, blockquote, table, img, figure {
+				break-inside: avoid;
+			}
+			p, li {
+				orphans: 3;
+				widows: 3;
+			}
+		}
+	</style>
+</head>
+<body>
+	<article class="markdown-preview prose prose-sm max-w-3xl mx-auto px-6 py-16">
+		${previewElement.innerHTML}
+	</article>
+</body>
+</html>`);
+		printWindow.document.close();
+		printWindow.addEventListener("afterprint", () => printWindow.close());
+		// Give styles time to apply
+		setTimeout(() => printWindow.print(), 250);
 	};
 
 	const handleOpenGist = () => {
@@ -206,7 +326,9 @@ export default function EditorPage() {
 						? `/@${originalOwner}/${currentGistId}`
 						: null
 				}
-				onDownload={handleDownload}
+				onDownloadMarkdown={handleDownload}
+				onDownloadHtml={handleDownloadHtml}
+				onDownloadPdf={handleDownloadPdf}
 			/>
 
 			<OpenGistModal

@@ -1,5 +1,5 @@
 import { useAuth } from "../contexts/AuthContext";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
 	Info,
 	Plus,
@@ -11,6 +11,7 @@ import {
 	Pencil,
 	Link,
 	FolderOpen,
+	ChevronDown,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import IconButton from "./IconButton";
@@ -27,7 +28,85 @@ interface NavbarProps {
 	onTogglePreview: () => void;
 	isOwner: boolean;
 	gistUrl: string | null;
-	onDownload: () => void;
+	onDownloadMarkdown: () => void;
+	onDownloadHtml: () => void;
+	onDownloadPdf: () => void;
+}
+
+const ICON_SIZE = 36;
+const CARET_SIZE = 30;
+const GAP = 6;
+const PAD_RIGHT = 4;
+
+function SplitDownloadButton({
+	onDownloadMarkdown,
+	onOpenMenu,
+	menuOpen,
+}: {
+	onDownloadMarkdown: () => void;
+	onOpenMenu: () => void;
+	menuOpen: boolean;
+}) {
+	const [hovered, setHovered] = useState(false);
+	const labelRef = useRef<HTMLSpanElement>(null);
+	const [labelWidth, setLabelWidth] = useState(0);
+
+	useEffect(() => {
+		if (labelRef.current) {
+			setLabelWidth(labelRef.current.scrollWidth);
+		}
+	}, []);
+
+	const expanded = hovered || menuOpen;
+	const targetWidth = expanded
+		? ICON_SIZE + GAP + labelWidth + PAD_RIGHT + CARET_SIZE
+		: ICON_SIZE;
+
+	const spring = { type: "spring" as const, stiffness: 500, damping: 30 };
+
+	return (
+		<motion.div
+			className={`inline-flex items-center justify-between h-9 rounded-full overflow-hidden text-gray-700 hover:bg-gray-100 ${expanded ? "bg-gray-100" : ""}`}
+			onMouseEnter={() => setHovered(true)}
+			onMouseLeave={() => setHovered(false)}
+			animate={{ width: targetWidth }}
+			transition={spring}
+			style={{ minWidth: ICON_SIZE }}
+		>
+			<button
+				onClick={onDownloadMarkdown}
+				className="inline-flex items-center justify-between h-9 cursor-pointer"
+				title="Download"
+			>
+				<span className="flex-shrink-0 flex items-center justify-center w-9 h-9">
+					<Download size={18} />
+				</span>
+				<motion.span
+					ref={labelRef}
+					className="text-sm font-medium whitespace-nowrap mr-2"
+					animate={{ opacity: expanded ? 1 : 0 }}
+					transition={{ duration: expanded ? 0.15 : 0.1 }}
+				>
+					Download
+				</motion.span>
+			</button>
+			<motion.button
+				onClick={(e) => {
+					e.stopPropagation();
+					onOpenMenu();
+				}}
+				className={`flex-shrink-0 flex items-center justify-center h-9 w-7 border-l border-gray-200 cursor-pointer hover:bg-gray-200 ${menuOpen ? "bg-gray-200" : ""}`}
+				animate={{
+					opacity: expanded ? 1 : 0,
+					width: expanded ? CARET_SIZE : 0,
+				}}
+				transition={spring}
+				aria-label="More download options"
+			>
+				<ChevronDown size={14} />
+			</motion.button>
+		</motion.div>
+	);
 }
 
 export default function Navbar({
@@ -40,10 +119,13 @@ export default function Navbar({
 	isPreview,
 	onTogglePreview,
 	gistUrl,
-	onDownload,
+	onDownloadMarkdown,
+	onDownloadHtml,
+	onDownloadPdf,
 }: NavbarProps) {
 	const { user, login, logout } = useAuth();
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
 	const [isAboutOpen, setIsAboutOpen] = useState(false);
 
 	const copyShareLink = () => {
@@ -106,36 +188,68 @@ export default function Navbar({
 
 					<div className="flex items-center gap-2">
 						{user && !isPreview && (
-							<>
-								<IconButton
-									icon={
-										<AnimatePresence mode="wait" initial={false}>
-											<motion.span
-												key={saveIconKey}
-												initial={{ opacity: 0 }}
-												animate={{ opacity: 1 }}
-												exit={{ opacity: 0 }}
-												transition={{ duration: 0.2 }}
-												className="flex items-center justify-center"
+							<IconButton
+								icon={
+									<AnimatePresence mode="wait" initial={false}>
+										<motion.span
+											key={saveIconKey}
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											exit={{ opacity: 0 }}
+											transition={{ duration: 0.2 }}
+											className="flex items-center justify-center"
+										>
+											{saveIcon}
+										</motion.span>
+									</AnimatePresence>
+								}
+								label={saveLabel}
+								onClick={onSave}
+								disabled={isSaving}
+								variant="primary"
+								className={
+									hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500"
+								}
+							/>
+						)}
+
+						{user && (
+							<div className="relative">
+								<SplitDownloadButton
+									onDownloadMarkdown={onDownloadMarkdown}
+									onOpenMenu={() => setIsDownloadMenuOpen((prev) => !prev)}
+									menuOpen={isDownloadMenuOpen}
+								/>
+
+								{isDownloadMenuOpen && (
+									<>
+										<div
+											className="fixed inset-0 z-10"
+											onClick={() => setIsDownloadMenuOpen(false)}
+										/>
+										<div className="absolute right-0 z-20 mt-2 w-44 bg-white rounded-md shadow-md py-1 border border-gray-200">
+											<button
+												onClick={() => {
+													setIsDownloadMenuOpen(false);
+													onDownloadHtml();
+												}}
+												className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
 											>
-												{saveIcon}
-											</motion.span>
-										</AnimatePresence>
-									}
-									label={saveLabel}
-									onClick={onSave}
-									disabled={isSaving}
-									variant="primary"
-									className={
-										hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500"
-									}
-								/>
-								<IconButton
-									icon={<Download size={18} />}
-									label="Download"
-									onClick={onDownload}
-								/>
-							</>
+												Download as HTML
+											</button>
+											<button
+												onClick={() => {
+													setIsDownloadMenuOpen(false);
+													onDownloadPdf();
+												}}
+												className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+											>
+												Download as PDF
+											</button>
+										</div>
+									</>
+								)}
+							</div>
 						)}
 
 						{user ? (
