@@ -17,8 +17,6 @@
     "@uiw/react-codemirror": "^4.25.4",
     "framer-motion": "^12.34.0",
     "highlight.js": "^11.11.1",
-    "html2canvas": "^1.4.1",
-    "jspdf": "^4.1.0",
     "lucide-react": "^0.563.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

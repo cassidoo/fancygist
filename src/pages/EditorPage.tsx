@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
 import Editor from "../components/Editor";
 import MarkdownPreview from "../components/MarkdownPreview";
 import Navbar from "../components/Navbar";
@@ -163,6 +161,17 @@ export default function EditorPage() {
 	const getPreviewElement = () =>
 		document.querySelector(".markdown-preview") as HTMLElement | null;
 
+	const waitForPreviewElement = async () => {
+		for (let i = 0; i < 10; i += 1) {
+			const previewElement = getPreviewElement();
+			if (previewElement) return previewElement;
+			await new Promise<void>((resolve) => {
+				window.requestAnimationFrame(() => resolve());
+			});
+		}
+		return null;
+	};
+
 	const getBaseFilename = () =>
 		filename.replace(/\.(md|markdown)$/i, "") || "untitled";
 
@@ -197,41 +206,61 @@ export default function EditorPage() {
 	};
 
 	const handleDownloadPdf = async () => {
-		const previewElement = getPreviewElement();
+		let previewElement = getPreviewElement();
 		if (!previewElement) {
-			alert("Switch to Preview mode to download PDF.");
+			setIsPreview(true);
+			previewElement = await waitForPreviewElement();
+		}
+
+		if (!previewElement) {
+			alert("Unable to render preview for PDF download.");
 			return;
 		}
 
-		try {
-			const canvas = await html2canvas(previewElement, {
-				scale: 2,
-				backgroundColor: "#ffffff",
-			});
-			const imageData = canvas.toDataURL("image/png");
-			const pdf = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
-			const pageWidth = pdf.internal.pageSize.getWidth();
-			const pageHeight = pdf.internal.pageSize.getHeight();
-			const imageWidth = pageWidth;
-			const imageHeight = (canvas.height * imageWidth) / canvas.width;
-			let heightLeft = imageHeight;
-			let position = 0;
-
-			pdf.addImage(imageData, "PNG", 0, position, imageWidth, imageHeight);
-			heightLeft -= pageHeight;
-
-			while (heightLeft > 0) {
-				position -= pageHeight;
-				pdf.addPage();
-				pdf.addImage(imageData, "PNG", 0, position, imageWidth, imageHeight);
-				heightLeft -= pageHeight;
-			}
-
-			pdf.save(`${getBaseFilename()}.pdf`);
-		} catch (error) {
-			console.error("Failed to download PDF:", error);
-			alert("Failed to download PDF");
+		const printWindow = window.open("", "_blank");
+		if (!printWindow) {
+			alert("Please allow popups to download PDF.");
+			return;
 		}
+
+		// Collect all stylesheets from the current page
+		const styleSheets = Array.from(document.styleSheets);
+		let cssText = "";
+		for (const sheet of styleSheets) {
+			try {
+				const rules = Array.from(sheet.cssRules);
+				cssText += rules.map((rule) => rule.cssText).join("\n");
+			} catch {
+				// Cross-origin sheets: link them instead
+				if (sheet.href) {
+					cssText += `@import url("${sheet.href}");\n`;
+				}
+			}
+		}
+
+		printWindow.document.write(`<!DOCTYPE html>
+<html>
+<head>
+	<title>${getBaseFilename()}</title>
+	<style>${cssText}</style>
+	<style>
+		@page { margin: 0; }
+		@media print {
+			body { margin: 0; padding: 12mm 10mm; }
+			.markdown-preview { padding: 0; }
+		}
+	</style>
+</head>
+<body>
+	<article class="markdown-preview prose prose-sm max-w-3xl mx-auto px-6 py-16">
+		${previewElement.innerHTML}
+	</article>
+</body>
+</html>`);
+		printWindow.document.close();
+		printWindow.addEventListener("afterprint", () => printWindow.close());
+		// Give styles time to apply
+		setTimeout(() => printWindow.print(), 250);
 	};
 
 	const handleOpenGist = () => {
