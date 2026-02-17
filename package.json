@@ -22,6 +22,7 @@
     "react-dom": "^19.2.0",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.13.0",
+    "rehype-callouts": "^2.1.2",
     "rehype-highlight": "^7.0.2",
     "remark-gfm": "^4.0.1",
     "zustand": "^5.0.11"
