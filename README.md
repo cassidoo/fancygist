@@ -137,7 +137,7 @@ A beautiful, minimal markdown editor backed by GitHub Gists. Write, share, and e
 - **Frontend**: React + TypeScript + Vite
 - **Styling**: TailwindCSS + @tailwindcss/typography
 - **Editor**: CodeMirror 6
-- **Markdown**: react-markdown + remark-gfm + rehype-highlight
+- **Markdown**: react-markdown + remark-gfm + rehype-highlight + rehype-callouts
 - **Routing**: React Router
 - **Backend**: Netlify Functions
 - **API**: GitHub Gists API via Octokit
