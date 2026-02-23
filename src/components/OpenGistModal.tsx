@@ -10,6 +10,13 @@ interface OpenGistModalProps {
 }
 
 const spring = { type: "spring" as const, stiffness: 400, damping: 30 };
+const GISTS_CACHE_KEY = "fancygist-open-modal-gists-cache";
+const GISTS_CACHE_TTL_MS = 2 * 60 * 1000;
+
+interface GistsCacheData {
+	timestamp: number;
+	gists: Gist[];
+}
 
 export default function OpenGistModal({
 	isOpen,
@@ -26,9 +33,51 @@ export default function OpenGistModal({
 		}
 	}, [isOpen]);
 
-	const fetchGists = async () => {
-		setLoading(true);
+	const getCachedGists = (): Gist[] | null => {
+		try {
+			const cached = localStorage.getItem(GISTS_CACHE_KEY);
+			if (!cached) return null;
+			const parsed: GistsCacheData = JSON.parse(cached);
+			if (!Array.isArray(parsed.gists) || typeof parsed.timestamp !== "number") {
+				localStorage.removeItem(GISTS_CACHE_KEY);
+				return null;
+			}
+			if (Date.now() - parsed.timestamp > GISTS_CACHE_TTL_MS) {
+				localStorage.removeItem(GISTS_CACHE_KEY);
+				return null;
+			}
+			return parsed.gists;
+		} catch (err) {
+			console.warn("Error reading gists cache:", err);
+			localStorage.removeItem(GISTS_CACHE_KEY);
+			return null;
+		}
+	};
+
+	const setCachedGists = (nextGists: Gist[]) => {
+		try {
+			const cacheData: GistsCacheData = {
+				timestamp: Date.now(),
+				gists: nextGists,
+			};
+			localStorage.setItem(GISTS_CACHE_KEY, JSON.stringify(cacheData));
+		} catch (err) {
+			console.warn("Error writing gists cache:", err);
+		}
+	};
+
+	const fetchGists = async (forceRefresh = false) => {
 		setError(null);
+		if (!forceRefresh) {
+			const cachedGists = getCachedGists();
+			if (cachedGists) {
+				setGists(cachedGists);
+				setLoading(false);
+				return;
+			}
+		}
+
+		setLoading(true);
 		try {
 			const response = await fetch("/api/user/gists", {
 				credentials: "include",
@@ -40,6 +89,7 @@ export default function OpenGistModal({
 
 			const data: Gist[] = await response.json();
 			setGists(data);
+			setCachedGists(data);
 		} catch (err) {
 			console.error("Error fetching gists:", err);
 			setError("Failed to load your gists. Please try again.");
@@ -123,7 +173,7 @@ export default function OpenGistModal({
 									<div className="text-center py-12">
 										<p className="text-red-600 text-sm">{error}</p>
 										<button
-											onClick={fetchGists}
+											onClick={() => fetchGists(true)}
 											className="mt-4 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
 										>
 											Retry
