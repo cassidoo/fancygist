@@ -64,12 +64,17 @@ export default function Editor({ value, onChange }: EditorProps) {
 		if (!view) return;
 		const cursorPos = view.state.selection.main.head;
 		const from = slashStartPosRef.current;
-		view.dispatch(
-			view.state.update({
-				changes: { from, to: cursorPos, insert: command.content },
-				selection: { anchor: from + command.content.length },
-			}),
-		);
+
+		if (command.action) {
+			command.action(view, from, cursorPos);
+		} else if (command.content) {
+			view.dispatch(
+				view.state.update({
+					changes: { from, to: cursorPos, insert: command.content },
+					selection: { anchor: from + command.content.length },
+				}),
+			);
+		}
 		setShowMenu(false);
 		view.focus();
 	};

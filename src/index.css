@@ -78,3 +78,37 @@ body {
 	border-radius: 0.375rem;
 	font-size: 1.2em;
 }
+
+/* Footnotes */
+.markdown-preview [data-footnote-ref] {
+	font-size: 0.75em;
+	vertical-align: super;
+	text-decoration: none;
+	color: #3b82f6;
+}
+
+.markdown-preview [data-footnote-ref]:hover {
+	text-decoration: underline;
+}
+
+.markdown-preview .footnotes {
+	margin-top: 2rem;
+	padding-top: 1rem;
+	border-top: 1px solid #e5e7eb;
+	font-size: 0.875em;
+	color: #6b7280;
+}
+
+.markdown-preview .footnotes ol {
+	padding-left: 1.5rem;
+}
+
+.markdown-preview .footnotes li {
+	margin-bottom: 0.25rem;
+}
+
+.markdown-preview [data-footnote-backref] {
+	text-decoration: none;
+	font-size: 0.75em;
+	color: #3b82f6;
+}
