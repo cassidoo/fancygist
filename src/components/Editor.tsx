@@ -44,6 +44,14 @@ export default function Editor({ value, onChange }: EditorProps) {
 		filteredCommandsRef.current = filteredCommands;
 	});
 
+	// Auto-focus editor on mount
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			editorRef.current?.view?.focus();
+		}, 0);
+		return () => clearTimeout(timer);
+	}, []);
+
 	const doInsert = (command: SlashCommand) => {
 		const view = editorRef.current?.view;
 		if (!view) return;
