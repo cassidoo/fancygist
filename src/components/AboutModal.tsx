@@ -64,19 +64,19 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 											</li>
 											<li>
 												<code className="bg-gray-100 px-1 rounded">
-													Ctrl + Shift + K
+													Ctrl/Cmd + Shift + K
 												</code>{" "}
 												for new gist
 											</li>
 											<li>
 												<code className="bg-gray-100 px-1 rounded">
-													Ctrl + Shift + O
+													Ctrl/Cmd + Shift + O
 												</code>{" "}
 												to open gist
 											</li>
 											<li>
 												<code className="bg-gray-100 px-1 rounded">
-													Ctrl + Shift + P
+													Ctrl/Cmd + Shift + P
 												</code>{" "}
 												to toggle preview
 											</li>
