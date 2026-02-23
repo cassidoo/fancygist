@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { EditorView } from "@codemirror/view";
 
 export interface SlashCommand {
 	label: string;
 	description: string;
-	content: string;
+	content?: string;
+	action?: (view: EditorView, from: number, to: number) => void;
 	inline?: boolean;
 }
 
@@ -99,6 +101,34 @@ export const slashCommands: SlashCommand[] = [
 		description: "Insert italic text",
 		content: "*italic text*",
 		inline: true,
+	},
+	{
+		label: "footnote",
+		description: "Insert a footnote reference and definition",
+		inline: true,
+		action: (view, from, to) => {
+			const doc = view.state.doc.toString();
+			const footnoteRegex = /\[\^(\d+)\]/g;
+			let maxN = 0;
+			let match;
+			while ((match = footnoteRegex.exec(doc)) !== null) {
+				maxN = Math.max(maxN, parseInt(match[1]));
+			}
+			const n = maxN + 1;
+			const refText = `[^${n}]`;
+			const defText = `\n\n[^${n}]: footnote text`;
+			const docLength = view.state.doc.length;
+
+			view.dispatch(
+				view.state.update({
+					changes: [
+						{ from, to, insert: refText },
+						{ from: docLength, to: docLength, insert: defText },
+					],
+					selection: { anchor: from + refText.length },
+				}),
+			);
+		},
 	},
 ];
 
