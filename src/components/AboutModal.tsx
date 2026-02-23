@@ -64,7 +64,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 											</li>
 											<li>
 												<code className="bg-gray-100 px-1 rounded">
-													Ctrl/Cmd + Shift + K
+													Ctrl + Shift + K
 												</code>{" "}
 												for new gist
 											</li>
