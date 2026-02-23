@@ -24,15 +24,22 @@ export default function Editor({ value, onChange }: EditorProps) {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const slashStartPosRef = useRef(0);
+	const [isInlineTrigger, setIsInlineTrigger] = useState(false);
 
 	// Refs so the keymap always sees current state
 	const showMenuRef = useRef(false);
 	const selectedIndexRef = useRef(0);
 	const filteredCommandsRef = useRef<SlashCommand[]>([]);
 
-	const filteredCommands = slashCommands.filter((cmd) =>
-		cmd.label.toLowerCase().includes(searchQuery.toLowerCase()),
-	);
+	const filteredCommands = slashCommands.filter((cmd) => {
+		const matchesQuery = cmd.label
+			.toLowerCase()
+			.includes(searchQuery.toLowerCase());
+		if (isInlineTrigger) {
+			return matchesQuery && cmd.inline;
+		}
+		return matchesQuery;
+	});
 
 	useEffect(() => {
 		showMenuRef.current = showMenu;
@@ -138,11 +145,16 @@ export default function Editor({ value, onChange }: EditorProps) {
 		const cursorPosInLine = cursorPos - lineStart;
 
 		const beforeCursor = lineText.slice(0, cursorPosInLine);
-		const slashMatch = beforeCursor.match(/^\/(\w*)$/);
+		const slashMatch = beforeCursor.match(/(?:^|\s)\/(\w*)$/);
 
 		if (slashMatch) {
+			const isInline = slashMatch.index !== undefined && slashMatch.index > 0;
+			setIsInlineTrigger(isInline);
 			setSearchQuery(slashMatch[1]);
-			slashStartPosRef.current = lineStart;
+			const slashOffset = isInline
+				? slashMatch.index + 1
+				: slashMatch.index ?? 0;
+			slashStartPosRef.current = lineStart + slashOffset;
 			setSelectedIndex(0);
 
 			const coords = view.coordsAtPos(cursorPos);

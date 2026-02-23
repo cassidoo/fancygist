@@ -5,6 +5,7 @@ export interface SlashCommand {
 	label: string;
 	description: string;
 	content: string;
+	inline?: boolean;
 }
 
 export const slashCommands: SlashCommand[] = [
@@ -20,6 +21,7 @@ export const slashCommands: SlashCommand[] = [
 		label: "image",
 		description: "Insert an image",
 		content: "![Alt text](https://example.com/image.jpg)",
+		inline: true,
 	},
 	{
 		label: "quote",
@@ -78,21 +80,25 @@ export const slashCommands: SlashCommand[] = [
 		description: "Insert lorem ipsum text",
 		content:
 			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+		inline: true,
 	},
 	{
 		label: "link",
 		description: "Insert a link",
 		content: "[Link text](https://example.com)",
+		inline: true,
 	},
 	{
 		label: "bold",
 		description: "Insert bold text",
 		content: "**bold text**",
+		inline: true,
 	},
 	{
 		label: "italic",
 		description: "Insert italic text",
 		content: "*italic text*",
+		inline: true,
 	},
 ];
 
