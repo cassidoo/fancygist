@@ -1,5 +1,6 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeCallouts from "rehype-callouts";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/rose-pine-dawn.css";
 // @ts-ignore
@@ -17,6 +18,7 @@ export default function MarkdownPreview({ content }: MarkdownPreviewProps) {
 					remarkPlugins={[remarkGfm]}
 					rehypePlugins={[
 						[rehypeHighlight, { detect: true, ignoreMissing: true }],
+						rehypeCallouts,
 					]}
 				>
 					{content || `**Nothing here yet!**\n\n${markdownPuns()}`}

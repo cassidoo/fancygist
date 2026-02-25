@@ -3,6 +3,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { githubLight } from "@uiw/codemirror-theme-github";
+import "rehype-callouts/theme/github";
 import { EditorView, keymap } from "@codemirror/view";
 import { Prec } from "@codemirror/state";
 import type { ReactCodeMirrorRef } from "@uiw/react-codemirror";
@@ -158,7 +159,7 @@ export default function Editor({ value, onChange }: EditorProps) {
 			setSearchQuery(slashMatch[1]);
 			const slashOffset = isInline
 				? slashMatch.index + 1
-				: slashMatch.index ?? 0;
+				: (slashMatch.index ?? 0);
 			slashStartPosRef.current = lineStart + slashOffset;
 			setSelectedIndex(0);
 

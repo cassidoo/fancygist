@@ -58,6 +58,24 @@ export const slashCommands: SlashCommand[] = [
 3. Third item`,
 	},
 	{
+		label: "alerts",
+		description: "Alerts, also sometimes known as callouts or admonitions",
+		content: `> [!NOTE]
+> Useful information that users should know, even when skimming content.
+
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+
+> [!CAUTION]
+> Advises about risks or negative outcomes of certain actions.`,
+	},
+	{
 		label: "heading1",
 		description: "Insert a heading level 1",
 		content: "# Heading 1",
