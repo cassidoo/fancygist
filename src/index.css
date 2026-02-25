@@ -91,6 +91,20 @@ body {
 	font-size: 1.2em;
 }
 
+.markdown-preview :not(pre) > code {
+	font-family: monospace;
+	background: #faf4ed;
+	color: #b4637a;
+	padding: 0.2em;
+	border-radius: 8px;
+	font-size: 0.9em;
+}
+
+.markdown-preview :not(pre) > code::before,
+.markdown-preview :not(pre) > code::after {
+	content: " "; /* hide from tailwind typography */
+}
+
 /* Footnotes */
 .markdown-preview [data-footnote-ref] {
 	font-size: 0.75em;
