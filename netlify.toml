@@ -29,13 +29,13 @@
   status = 200
 
 [[redirects]]
-  from = "/api/gists/:id"
-  to = "/.netlify/functions/gist-by-id"
+  from = "/api/gists/create"
+  to = "/.netlify/functions/gists-create"
   status = 200
 
 [[redirects]]
-  from = "/api/gists/create"
-  to = "/.netlify/functions/gists-create"
+  from = "/api/gists/:id"
+  to = "/.netlify/functions/gist-by-id"
   status = 200
 
 [[redirects]]

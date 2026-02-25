@@ -3,6 +3,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { githubLight } from "@uiw/codemirror-theme-github";
+import "rehype-callouts/theme/github";
 import { EditorView, keymap } from "@codemirror/view";
 import { Prec } from "@codemirror/state";
 import type { ReactCodeMirrorRef } from "@uiw/react-codemirror";
@@ -19,21 +20,25 @@ interface EditorProps {
 
 export default function Editor({ value, onChange }: EditorProps) {
 	const editorRef = useRef<ReactCodeMirrorRef>(null);
-	const containerRef = useRef<HTMLDivElement>(null);
 	const [showMenu, setShowMenu] = useState(false);
-	const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const slashStartPosRef = useRef(0);
+	const [isInlineTrigger, setIsInlineTrigger] = useState(false);
 
 	// Refs so the keymap always sees current state
 	const showMenuRef = useRef(false);
 	const selectedIndexRef = useRef(0);
 	const filteredCommandsRef = useRef<SlashCommand[]>([]);
 
-	const filteredCommands = slashCommands.filter((cmd) =>
-		cmd.label.toLowerCase().includes(searchQuery.toLowerCase()),
-	);
+	const filteredCommands = slashCommands.filter((cmd) => {
+		const matchesQuery = cmd.label.toLowerCase().includes(searchQuery.toLowerCase());
+		if (isInlineTrigger) {
+			return matchesQuery && cmd.inline;
+		}
+		return matchesQuery;
+	});
+    
 	const { extension: listboxAriaExtension, listboxId, getOptionId } =
 		useCodeMirrorListboxAriaAttributes({
 			editorRef,
@@ -51,17 +56,30 @@ export default function Editor({ value, onChange }: EditorProps) {
 		filteredCommandsRef.current = filteredCommands;
 	});
 
+	// Auto-focus editor on mount
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			editorRef.current?.view?.focus();
+		}, 0);
+		return () => clearTimeout(timer);
+	}, []);
+
 	const doInsert = (command: SlashCommand) => {
 		const view = editorRef.current?.view;
 		if (!view) return;
 		const cursorPos = view.state.selection.main.head;
 		const from = slashStartPosRef.current;
-		view.dispatch(
-			view.state.update({
-				changes: { from, to: cursorPos, insert: command.content },
-				selection: { anchor: from + command.content.length },
-			}),
-		);
+
+		if (command.action) {
+			command.action(view, from, cursorPos);
+		} else if (command.content) {
+			view.dispatch(
+				view.state.update({
+					changes: { from, to: cursorPos, insert: command.content },
+					selection: { anchor: from + command.content.length },
+				}),
+			);
+		}
 		setShowMenu(false);
 		view.focus();
 	};
@@ -137,32 +155,25 @@ export default function Editor({ value, onChange }: EditorProps) {
 		const cursorPosInLine = cursorPos - lineStart;
 
 		const beforeCursor = lineText.slice(0, cursorPosInLine);
-		const slashMatch = beforeCursor.match(/^\/(\w*)$/);
+		const slashMatch = beforeCursor.match(/(?:^|\s)\/(\w*)$/);
 
 		if (slashMatch) {
+			const isInline = slashMatch.index !== undefined && slashMatch.index > 0;
+			setIsInlineTrigger(isInline);
 			setSearchQuery(slashMatch[1]);
-			slashStartPosRef.current = lineStart;
+			const slashOffset = isInline
+				? slashMatch.index + 1
+				: (slashMatch.index ?? 0);
+			slashStartPosRef.current = lineStart + slashOffset;
 			setSelectedIndex(0);
-
-			const coords = view.coordsAtPos(cursorPos);
-			if (coords && containerRef.current) {
-				const containerRect = containerRef.current.getBoundingClientRect();
-				setMenuPosition({
-					top: coords.bottom - containerRect.top,
-					left: coords.left - containerRect.left,
-				});
-				setShowMenu(true);
-			}
+			setShowMenu(true);
 		} else {
 			setShowMenu(false);
 		}
 	};
 
 	return (
-		<div
-			ref={containerRef}
-			className="h-full w-full overflow-auto bg-white relative"
-		>
+		<div className="h-full w-full overflow-auto bg-white relative">
 			<CodeMirror
 				ref={editorRef}
 				value={value}

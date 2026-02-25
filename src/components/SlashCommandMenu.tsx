@@ -1,10 +1,13 @@
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { EditorView } from "@codemirror/view";
 
 export interface SlashCommand {
 	label: string;
 	description: string;
-	content: string;
+	content?: string;
+	action?: (view: EditorView, from: number, to: number) => void;
+	inline?: boolean;
 }
 
 export const slashCommands: SlashCommand[] = [
@@ -20,6 +23,7 @@ export const slashCommands: SlashCommand[] = [
 		label: "image",
 		description: "Insert an image",
 		content: "![Alt text](https://example.com/image.jpg)",
+		inline: true,
 	},
 	{
 		label: "quote",
@@ -54,6 +58,24 @@ export const slashCommands: SlashCommand[] = [
 3. Third item`,
 	},
 	{
+		label: "alerts",
+		description: "Alerts, also sometimes known as callouts or admonitions",
+		content: `> [!NOTE]
+> Useful information that users should know, even when skimming content.
+
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+
+> [!CAUTION]
+> Advises about risks or negative outcomes of certain actions.`,
+	},
+	{
 		label: "heading1",
 		description: "Insert a heading level 1",
 		content: "# Heading 1",
@@ -78,21 +100,53 @@ export const slashCommands: SlashCommand[] = [
 		description: "Insert lorem ipsum text",
 		content:
 			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+		inline: true,
 	},
 	{
 		label: "link",
 		description: "Insert a link",
 		content: "[Link text](https://example.com)",
+		inline: true,
 	},
 	{
 		label: "bold",
 		description: "Insert bold text",
 		content: "**bold text**",
+		inline: true,
 	},
 	{
 		label: "italic",
 		description: "Insert italic text",
 		content: "*italic text*",
+		inline: true,
+	},
+	{
+		label: "footnote",
+		description: "Insert a footnote reference and definition",
+		inline: true,
+		action: (view, from, to) => {
+			const doc = view.state.doc.toString();
+			const footnoteRegex = /\[\^(\d+)\]/g;
+			let maxN = 0;
+			let match;
+			while ((match = footnoteRegex.exec(doc)) !== null) {
+				maxN = Math.max(maxN, parseInt(match[1]));
+			}
+			const n = maxN + 1;
+			const refText = `[^${n}]`;
+			const defText = `\n\n[^${n}]: footnote text`;
+			const docLength = view.state.doc.length;
+
+			view.dispatch(
+				view.state.update({
+					changes: [
+						{ from, to, insert: refText },
+						{ from: docLength, to: docLength, insert: defText },
+					],
+					selection: { anchor: from + refText.length },
+				}),
+			);
+		},
 	},
 ];
 
@@ -145,15 +199,7 @@ export default function SlashCommandMenu({
 	return (
 		<AnimatePresence>
 			{show && (
-				<div
-					style={{
-						position: "absolute",
-						top: `${position.top}px`,
-						left: `${position.left}px`,
-						width: "240px",
-						perspective: 600,
-					}}
-				>
+				<div className="slash-command-menu-positioner fixed w-60 max-w-fit h-min [perspective:600px]">
 					<motion.div
 						ref={menuRef}
 						role="listbox"
