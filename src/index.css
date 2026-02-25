@@ -69,6 +69,18 @@ body {
 	padding: 0 2px;
 }
 
+.cm-ia-editor .cm-cursor-primary {
+	anchor-name: --slash-command-anchor;
+}
+
+.slash-command-menu-positioner {
+	position-anchor: --slash-command-anchor;
+	position-visibility: always;
+	top: calc(anchor(bottom) + 8px);
+	left: anchor(left);
+	position-try-fallbacks: flip-block;
+}
+
 .markdown-preview pre {
 	background-color: transparent;
 	padding: 0;
