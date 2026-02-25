@@ -3,6 +3,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { githubLight } from "@uiw/codemirror-theme-github";
+import "rehype-callouts/theme/github";
 import { EditorView, keymap } from "@codemirror/view";
 import { Prec } from "@codemirror/state";
 import type { ReactCodeMirrorRef } from "@uiw/react-codemirror";
@@ -62,12 +63,17 @@ export default function Editor({ value, onChange }: EditorProps) {
 		if (!view) return;
 		const cursorPos = view.state.selection.main.head;
 		const from = slashStartPosRef.current;
-		view.dispatch(
-			view.state.update({
-				changes: { from, to: cursorPos, insert: command.content },
-				selection: { anchor: from + command.content.length },
-			}),
-		);
+
+		if (command.action) {
+			command.action(view, from, cursorPos);
+		} else if (command.content) {
+			view.dispatch(
+				view.state.update({
+					changes: { from, to: cursorPos, insert: command.content },
+					selection: { anchor: from + command.content.length },
+				}),
+			);
+		}
 		setShowMenu(false);
 		view.focus();
 	};
@@ -151,7 +157,7 @@ export default function Editor({ value, onChange }: EditorProps) {
 			setSearchQuery(slashMatch[1]);
 			const slashOffset = isInline
 				? slashMatch.index + 1
-				: slashMatch.index ?? 0;
+				: (slashMatch.index ?? 0);
 			slashStartPosRef.current = lineStart + slashOffset;
 			setSelectedIndex(0);
 			setShowMenu(true);
