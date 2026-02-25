@@ -3,7 +3,6 @@ import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import { githubLight } from "@uiw/codemirror-theme-github";
-import "rehype-callouts/theme/github";
 import { EditorView, keymap } from "@codemirror/view";
 import { Prec } from "@codemirror/state";
 import type { ReactCodeMirrorRef } from "@uiw/react-codemirror";
@@ -11,6 +10,9 @@ import SlashCommandMenu, {
 	slashCommands,
 	type SlashCommand,
 } from "./SlashCommandMenu";
+
+// @ts-ignore
+import "rehype-callouts/theme/github";
 
 interface EditorProps {
 	value: string;
