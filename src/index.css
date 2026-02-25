@@ -91,6 +91,21 @@ body {
 	font-size: 1.2em;
 }
 
+/* Inline code */
+.markdown-preview :not(pre) > code {
+	background-color: #f3f4f6;
+	border: 1px solid #e5e7eb;
+	border-radius: 0.25rem;
+	padding: 0.125rem 0.375rem;
+	font-size: 0.875em;
+	font-family:
+		"SF Mono", "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular,
+		Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-weight: 500;
+	color: #1f2937;
+	word-break: break-word;
+}
+
 /* Footnotes */
 .markdown-preview [data-footnote-ref] {
 	font-size: 0.75em;
