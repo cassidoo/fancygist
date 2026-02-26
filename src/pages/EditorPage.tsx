@@ -7,6 +7,11 @@ import OpenGistModal from "../components/OpenGistModal";
 import { useAuth } from "../contexts/AuthContext";
 import { useKeyboardShortcut } from "../hooks/useKeyboardShortcut";
 import { useUnsavedChanges } from "../hooks/useUnsavedChanges";
+import {
+	DEFAULT_MARKDOWN_FILENAME,
+	deriveMarkdownFilenameFromContent,
+	normalizeMarkdownFilename,
+} from "../utils/filename";
 import type { Gist } from "../types";
 
 export default function EditorPage() {
@@ -15,7 +20,9 @@ export default function EditorPage() {
 	const { user } = useAuth();
 	const [content, setContent] = useState("");
 	const [description, setDescription] = useState("");
-	const [filename, setFilename] = useState("untitled.md");
+	const [filename, setFilename] = useState(DEFAULT_MARKDOWN_FILENAME);
+	const [originalFilename, setOriginalFilename] = useState<string | null>(null);
+	const [isFilenameManuallyEdited, setIsFilenameManuallyEdited] = useState(false);
 	const [isPreview, setIsPreview] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [saveFeedback, setSaveFeedback] = useState<
@@ -63,6 +70,8 @@ export default function EditorPage() {
 			if (mdFile && mdFile.content) {
 				setContent(mdFile.content);
 				setFilename(mdFile.filename);
+				setOriginalFilename(mdFile.filename);
+				setIsFilenameManuallyEdited(true);
 				setDescription(gist.description || "");
 				setOriginalOwner(gist.owner.login);
 				setCurrentGistId(id);
@@ -80,16 +89,32 @@ export default function EditorPage() {
 			return;
 		}
 
-		setSaveFeedback("idle");
-		setIsSaving(true);
-		try {
-			const isOwner = originalOwner === user.login;
+	setSaveFeedback("idle");
+	setIsSaving(true);
+	try {
+		const filenameToSave =
+			filename.trim().length > 0
+				? filename
+				: originalFilename || deriveMarkdownFilenameFromContent(content);
+		const normalizedFilename = normalizeMarkdownFilename(filenameToSave);
+		const isOwner = originalOwner === user.login;
 			const endpoint =
 				currentGistId && isOwner
 					? `/api/gists/${currentGistId}`
 					: "/api/gists/create";
 
 			const method = currentGistId && isOwner ? "PATCH" : "POST";
+			const files: Record<string, { content: string } | null> = {};
+
+			if (
+				currentGistId &&
+				isOwner &&
+				originalFilename &&
+				originalFilename !== normalizedFilename
+			) {
+				files[originalFilename] = null;
+			}
+			files[normalizedFilename] = { content };
 
 			const response = await fetch(endpoint, {
 				method,
@@ -97,9 +122,7 @@ export default function EditorPage() {
 				credentials: "include",
 				body: JSON.stringify({
 					description,
-					files: {
-						[filename]: { content },
-					},
+					files,
 					public: true,
 				}),
 			});
@@ -109,6 +132,8 @@ export default function EditorPage() {
 			const savedGist: Gist = await response.json();
 			setCurrentGistId(savedGist.id);
 			setOriginalOwner(user.login);
+			setFilename(normalizedFilename);
+			setOriginalFilename(normalizedFilename);
 			markClean();
 			setSaveFeedback("success");
 
@@ -129,7 +154,9 @@ export default function EditorPage() {
 		}
 		setContent("");
 		setDescription("");
-		setFilename("untitled.md");
+		setFilename(DEFAULT_MARKDOWN_FILENAME);
+		setOriginalFilename(null);
+		setIsFilenameManuallyEdited(false);
 		setCurrentGistId(null);
 		setOriginalOwner(null);
 		setIsPreview(false);
@@ -139,14 +166,20 @@ export default function EditorPage() {
 
 	const handleContentChange = (value: string) => {
 		setContent(value);
+		if (!currentGistId && !isFilenameManuallyEdited) {
+			setFilename(deriveMarkdownFilenameFromContent(value));
+		}
+		markDirty();
+	};
+
+	const handleFilenameChange = (value: string) => {
+		setFilename(value);
+		setIsFilenameManuallyEdited(true);
 		markDirty();
 	};
 
 	const handleDownload = () => {
-		const markdownFilename =
-			filename.endsWith(".md") || filename.endsWith(".markdown")
-				? filename
-				: `${filename}.md`;
+		const markdownFilename = normalizeMarkdownFilename(filename);
 		const blob = new Blob([content], { type: "text/markdown" });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
@@ -173,7 +206,8 @@ export default function EditorPage() {
 	};
 
 	const getBaseFilename = () =>
-		filename.replace(/\.(md|markdown)$/i, "") || "untitled";
+		normalizeMarkdownFilename(filename).replace(/\.(md|markdown)$/i, "") ||
+		"untitled";
 
 	const handleDownloadHtml = () => {
 		const previewElement = getPreviewElement();
@@ -315,6 +349,8 @@ export default function EditorPage() {
 				onNew={handleNew}
 				onOpen={handleOpenGist}
 				onSave={handleSave}
+				filename={filename}
+				onFilenameChange={handleFilenameChange}
 				isSaving={isSaving}
 				saveFeedback={saveFeedback}
 				hasUnsavedChanges={hasUnsavedChanges}

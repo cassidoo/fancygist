@@ -38,7 +38,10 @@ export default function OpenGistModal({
 			const cached = localStorage.getItem(GISTS_CACHE_KEY);
 			if (!cached) return null;
 			const parsed: GistsCacheData = JSON.parse(cached);
-			if (!Array.isArray(parsed.gists) || typeof parsed.timestamp !== "number") {
+			if (
+				!Array.isArray(parsed.gists) ||
+				typeof parsed.timestamp !== "number"
+			) {
 				localStorage.removeItem(GISTS_CACHE_KEY);
 				return null;
 			}
@@ -124,7 +127,7 @@ export default function OpenGistModal({
 		const mdFile = Object.values(gist.files).find(
 			(f) => f.filename.endsWith(".md") || f.filename.endsWith(".markdown"),
 		);
-		return mdFile?.filename || "untitled.md";
+		return mdFile?.filename || "Untitled gist";
 	};
 
 	return (
@@ -155,7 +158,7 @@ export default function OpenGistModal({
 						>
 							<div className="p-6 border-b border-gray-200">
 								<h2 className="text-xl font-semibold text-gray-900">
-									Open Gist
+									Open gist
 								</h2>
 								<p className="text-sm text-gray-600 mt-1">
 									Select a gist to open

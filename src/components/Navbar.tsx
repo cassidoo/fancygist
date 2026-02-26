@@ -2,25 +2,28 @@ import { useAuth } from "../contexts/AuthContext";
 import { useState, useRef, useEffect } from "react";
 import {
 	Info,
-	Plus,
 	Save,
+	Scroll,
+	ScrollText,
 	Check,
 	X,
 	Download,
 	Eye,
 	Pencil,
 	Link,
-	FolderOpen,
 	ChevronDown,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import IconButton from "./IconButton";
 import AboutModal from "./AboutModal";
+import FileModal from "./FileModal";
 
 interface NavbarProps {
 	onNew: () => void;
 	onOpen: () => void;
 	onSave: () => void;
+	filename: string;
+	onFilenameChange: (value: string) => void;
 	isSaving: boolean;
 	saveFeedback: "idle" | "success" | "error";
 	hasUnsavedChanges: boolean;
@@ -113,6 +116,8 @@ export default function Navbar({
 	onNew,
 	onOpen,
 	onSave,
+	filename,
+	onFilenameChange,
 	isSaving,
 	saveFeedback,
 	hasUnsavedChanges,
@@ -127,6 +132,7 @@ export default function Navbar({
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
 	const [isAboutOpen, setIsAboutOpen] = useState(false);
+	const [isFileModalOpen, setIsFileModalOpen] = useState(false);
 
 	const copyShareLink = () => {
 		if (gistUrl) {
@@ -161,15 +167,17 @@ export default function Navbar({
 							onClick={() => setIsAboutOpen(true)}
 						/>
 
-						<IconButton icon={<Plus size={18} />} label="New" onClick={onNew} />
-
-						{user && (
-							<IconButton
-								icon={<FolderOpen size={18} />}
-								label="Open"
-								onClick={onOpen}
-							/>
-						)}
+						<IconButton
+							icon={
+								hasUnsavedChanges ? (
+									<ScrollText size={18} />
+								) : (
+									<Scroll size={18} />
+								)
+							}
+							label="File"
+							onClick={() => setIsFileModalOpen(true)}
+						/>
 
 						<IconButton
 							icon={isPreview ? <Pencil size={18} /> : <Eye size={18} />}
@@ -187,7 +195,7 @@ export default function Navbar({
 					</div>
 
 					<div className="flex items-center gap-2">
-						{user && !isPreview && (
+						{user && (
 							<IconButton
 								icon={
 									<AnimatePresence mode="wait" initial={false}>
@@ -337,6 +345,15 @@ export default function Navbar({
 			</nav>
 
 			<AboutModal isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} />
+			<FileModal
+				isOpen={isFileModalOpen}
+				onClose={() => setIsFileModalOpen(false)}
+				onNew={onNew}
+				onOpen={onOpen}
+				canOpen={Boolean(user)}
+				filename={filename}
+				onFilenameChange={onFilenameChange}
+			/>
 		</>
 	);
 }
