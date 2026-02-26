@@ -1,5 +1,7 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeCallouts from "rehype-callouts";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/rose-pine-dawn.css";
@@ -10,6 +12,19 @@ interface MarkdownPreviewProps {
 	content: string;
 }
 
+const sanitizeSchema = {
+	...defaultSchema,
+	tagNames: [
+		...(defaultSchema.tagNames ?? []),
+		"sub",
+		"sup",
+		"kbd",
+		"ins",
+		"br",
+		"hr",
+	],
+};
+
 export default function MarkdownPreview({ content }: MarkdownPreviewProps) {
 	return (
 		<div className="h-full overflow-auto bg-white">
@@ -17,6 +32,8 @@ export default function MarkdownPreview({ content }: MarkdownPreviewProps) {
 				<ReactMarkdown
 					remarkPlugins={[remarkGfm]}
 					rehypePlugins={[
+						rehypeRaw,
+						[rehypeSanitize, sanitizeSchema],
 						[rehypeHighlight, { detect: true, ignoreMissing: true }],
 						rehypeCallouts,
 					]}

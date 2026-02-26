@@ -121,6 +121,41 @@ export const slashCommands: SlashCommand[] = [
 		inline: true,
 	},
 	{
+		label: "sub",
+		description: "Insert subscript text",
+		content: "<sub>subscript</sub>",
+		inline: true,
+	},
+	{
+		label: "sup",
+		description: "Insert superscript text",
+		content: "<sup>superscript</sup>",
+		inline: true,
+	},
+	{
+		label: "kbd",
+		description: "Insert keyboard input text",
+		content: "<kbd>Ctrl</kbd>+<kbd>K</kbd>",
+		inline: true,
+	},
+	{
+		label: "ins",
+		description: "Insert underlined text",
+		content: "<ins>inserted text</ins>",
+		inline: true,
+	},
+	{
+		label: "br",
+		description: "Insert a line break tag",
+		content: "<br />",
+		inline: true,
+	},
+	{
+		label: "hr",
+		description: "Insert a horizontal rule tag",
+		content: "<hr />",
+	},
+	{
 		label: "footnote",
 		description: "Insert a footnote reference and definition",
 		inline: true,
