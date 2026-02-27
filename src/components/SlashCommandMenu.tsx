@@ -188,6 +188,9 @@ export const slashCommands: SlashCommand[] = [
 interface SlashCommandMenuProps {
 	commands: SlashCommand[];
 	selectedIndex: number;
+	position: { top: number; left: number };
+	listboxId: string;
+	getOptionId: (index: number) => string;
 	onSelect: (command: SlashCommand) => void;
 	onClose: () => void;
 }
@@ -195,6 +198,9 @@ interface SlashCommandMenuProps {
 export default function SlashCommandMenu({
 	commands,
 	selectedIndex,
+	position,
+	listboxId,
+	getOptionId,
 	onSelect,
 	onClose,
 }: SlashCommandMenuProps) {
@@ -231,6 +237,9 @@ export default function SlashCommandMenu({
 				<div className="slash-command-menu-positioner fixed w-60 max-w-fit h-min [perspective:600px]">
 					<motion.div
 						ref={menuRef}
+						role="listbox"
+						id={listboxId}
+						aria-label="Slash commands"
 						className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 max-h-64 max-w-64 overflow-y-auto z-50"
 						style={{ transformOrigin: "top left" }}
 						initial={{ rotateY: -70, opacity: 0 }}
@@ -241,6 +250,9 @@ export default function SlashCommandMenu({
 						{commands.map((command, index) => (
 							<button
 								key={command.label}
+								role="option"
+								id={getOptionId(index)}
+								aria-selected={index === selectedIndex}
 								onClick={() => onSelect(command)}
 								className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors ${
 									index === selectedIndex

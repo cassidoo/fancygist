@@ -10,6 +10,7 @@ import SlashCommandMenu, {
 	slashCommands,
 	type SlashCommand,
 } from "./SlashCommandMenu";
+import { useCodeMirrorListboxAriaAttributes } from "../hooks/useCodeMirrorListboxAriaAttributes";
 
 // @ts-ignore
 import "rehype-callouts/theme/github";
@@ -33,14 +34,19 @@ export default function Editor({ value, onChange }: EditorProps) {
 	const filteredCommandsRef = useRef<SlashCommand[]>([]);
 
 	const filteredCommands = slashCommands.filter((cmd) => {
-		const matchesQuery = cmd.label
-			.toLowerCase()
-			.includes(searchQuery.toLowerCase());
+		const matchesQuery = cmd.label.toLowerCase().includes(searchQuery.toLowerCase());
 		if (isInlineTrigger) {
 			return matchesQuery && cmd.inline;
 		}
 		return matchesQuery;
 	});
+    
+	const { extension: listboxAriaExtension, listboxId, getOptionId } =
+		useCodeMirrorListboxAriaAttributes({
+			editorRef,
+			open: showMenu && filteredCommands.length > 0,
+			activeOptionIndex: filteredCommands[selectedIndex] ? selectedIndex : undefined,
+		});
 
 	useEffect(() => {
 		showMenuRef.current = showMenu;
@@ -177,6 +183,7 @@ export default function Editor({ value, onChange }: EditorProps) {
 				theme={githubLight}
 				extensions={[
 					slashCommandKeymap,
+					listboxAriaExtension,
 					markdown({ codeLanguages: languages }),
 					EditorView.lineWrapping,
 				]}
@@ -195,6 +202,9 @@ export default function Editor({ value, onChange }: EditorProps) {
 				<SlashCommandMenu
 					commands={filteredCommands}
 					selectedIndex={selectedIndex}
+					position={menuPosition}
+					listboxId={listboxId}
+					getOptionId={getOptionId}
 					onSelect={(cmd) => doInsert(cmd)}
 					onClose={() => setShowMenu(false)}
 				/>
