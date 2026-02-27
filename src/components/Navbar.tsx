@@ -34,6 +34,7 @@ interface NavbarProps {
 	onDownloadMarkdown: () => void;
 	onDownloadHtml: () => void;
 	onDownloadPdf: () => void;
+	onBeforeLogin?: () => void;
 }
 
 const ICON_SIZE = 36;
@@ -127,6 +128,7 @@ export default function Navbar({
 	onDownloadMarkdown,
 	onDownloadHtml,
 	onDownloadPdf,
+	onBeforeLogin,
 }: NavbarProps) {
 	const { user, login, logout } = useAuth();
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -334,7 +336,10 @@ export default function Navbar({
 							</div>
 						) : (
 							<button
-								onClick={login}
+								onClick={() => {
+									onBeforeLogin?.();
+									login();
+								}}
 								className="px-3 py-1.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded cursor-pointer"
 							>
 								Login with GitHub

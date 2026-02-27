@@ -14,6 +14,8 @@ import {
 } from "../utils/filename";
 import type { Gist } from "../types";
 
+const LOGIN_DRAFT_STORAGE_KEY = "fancygist:login-draft";
+
 export default function EditorPage() {
 	const { username, gistId } = useParams();
 	const navigate = useNavigate();
@@ -56,6 +58,29 @@ export default function EditorPage() {
 		const timeoutId = window.setTimeout(() => setSaveFeedback("idle"), 1200);
 		return () => window.clearTimeout(timeoutId);
 	}, [saveFeedback]);
+
+	useEffect(() => {
+		if (gistId) return;
+		const savedDraft = window.sessionStorage.getItem(LOGIN_DRAFT_STORAGE_KEY);
+		if (!savedDraft) return;
+		try {
+			const draft = JSON.parse(savedDraft) as {
+				content?: string;
+				description?: string;
+				filename?: string;
+				isFilenameManuallyEdited?: boolean;
+			};
+			setContent(draft.content ?? "");
+			setDescription(draft.description ?? "");
+			setFilename(draft.filename || DEFAULT_MARKDOWN_FILENAME);
+			setIsFilenameManuallyEdited(Boolean(draft.isFilenameManuallyEdited));
+			markDirty();
+		} catch (error) {
+			console.error("Failed to restore login draft:", error);
+		} finally {
+			window.sessionStorage.removeItem(LOGIN_DRAFT_STORAGE_KEY);
+		}
+	}, [gistId, markDirty]);
 
 	const loadGist = async (id: string) => {
 		try {
@@ -134,6 +159,7 @@ export default function EditorPage() {
 			setOriginalOwner(user.login);
 			setFilename(normalizedFilename);
 			setOriginalFilename(normalizedFilename);
+			window.sessionStorage.removeItem(LOGIN_DRAFT_STORAGE_KEY);
 			markClean();
 			setSaveFeedback("success");
 
@@ -160,8 +186,22 @@ export default function EditorPage() {
 		setCurrentGistId(null);
 		setOriginalOwner(null);
 		setIsPreview(false);
+		window.sessionStorage.removeItem(LOGIN_DRAFT_STORAGE_KEY);
 		markClean();
 		window.history.pushState({}, "", "/");
+	};
+
+	const handleBeforeLogin = () => {
+		if (!content.trim() && !description.trim()) return;
+		window.sessionStorage.setItem(
+			LOGIN_DRAFT_STORAGE_KEY,
+			JSON.stringify({
+				content,
+				description,
+				filename,
+				isFilenameManuallyEdited,
+			}),
+		);
 	};
 
 	const handleContentChange = (value: string) => {
@@ -365,6 +405,7 @@ export default function EditorPage() {
 				onDownloadMarkdown={handleDownload}
 				onDownloadHtml={handleDownloadHtml}
 				onDownloadPdf={handleDownloadPdf}
+				onBeforeLogin={handleBeforeLogin}
 			/>
 
 			<OpenGistModal
