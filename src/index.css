@@ -54,11 +54,11 @@ body {
 }
 
 .cm-ia-editor .cm-activeLine {
-	background-color: rgba(59, 130, 246, 0.05) !important;
+	background-color: oklch(64.8% 0.2 131.684 / 0.04) !important;
 }
 
 .cm-ia-editor .cm-cursor {
-	border-left: 2px solid #111827;
+	border-left: 3px solid var(--color-lime-600);
 }
 
 .cm-ia-editor .cm-focused {

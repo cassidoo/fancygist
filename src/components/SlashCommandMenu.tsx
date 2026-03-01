@@ -241,11 +241,12 @@ export default function SlashCommandMenu({
 						{commands.map((command, index) => (
 							<button
 								key={command.label}
+								onMouseDown={(e) => e.preventDefault()}
 								onClick={() => onSelect(command)}
-								className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors ${
+								className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors cursor-pointer ${
 									index === selectedIndex
-										? "bg-blue-50 border-l-2 border-blue-500"
-										: ""
+										? "bg-gray-50 border-l-2 border-lime-600"
+										: "border-l-2 border-l-transparent"
 								}`}
 							>
 								<div className="font-medium text-sm text-gray-900">
