@@ -1,5 +1,13 @@
 export const handler = async (event) => {
-  const cookies = event.headers.cookie || '';
+  const multiCookies =
+    event.multiValueHeaders?.cookie ||
+    event.multiValueHeaders?.Cookie ||
+    [];
+  const cookies =
+    event.headers.cookie ||
+    event.headers.Cookie ||
+    (Array.isArray(event.cookies) ? event.cookies.join('; ') : '') ||
+    (Array.isArray(multiCookies) ? multiCookies.join('; ') : '');
   const tokenMatch = cookies.match(/gh_token=([^;]+)/);
   const token = tokenMatch ? tokenMatch[1] : null;
 

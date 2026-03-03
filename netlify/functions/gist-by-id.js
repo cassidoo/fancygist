@@ -1,6 +1,12 @@
+import { handler as createGistHandler } from './gists-create.js';
+
 export const handler = async (event) => {
   const pathParts = event.path.split('/');
   const id = pathParts[pathParts.length - 1];
+
+  if (event.httpMethod === 'POST' && id === 'create') {
+    return createGistHandler(event);
+  }
 
   if (event.httpMethod === 'GET') {
     // Fetch gist by ID (public, no auth needed)
@@ -39,7 +45,15 @@ export const handler = async (event) => {
     }
   } else if (event.httpMethod === 'PATCH') {
     // Update existing gist (requires auth)
-    const cookies = event.headers.cookie || '';
+    const multiCookies =
+      event.multiValueHeaders?.cookie ||
+      event.multiValueHeaders?.Cookie ||
+      [];
+    const cookies =
+      event.headers.cookie ||
+      event.headers.Cookie ||
+      (Array.isArray(event.cookies) ? event.cookies.join('; ') : '') ||
+      (Array.isArray(multiCookies) ? multiCookies.join('; ') : '');
     const tokenMatch = cookies.match(/gh_token=([^;]+)/);
     const token = tokenMatch ? tokenMatch[1] : null;
 
@@ -90,7 +104,7 @@ export const handler = async (event) => {
   } else {
     return {
       statusCode: 405,
-      body: JSON.stringify({ error: 'Method not allowed' }),
+      body: JSON.stringify({ error: `Method ${event.httpMethod} not allowed for ${event.path}` }),
     };
   }
 };

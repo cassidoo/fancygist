@@ -6,7 +6,13 @@ export const handler = async (event) => {
     };
   }
 
-  const cookie = 'gh_token=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0';
+  const proto = event.headers['x-forwarded-proto'] || '';
+  const isSecure = proto.includes('https') || (process.env.URL || '').startsWith('https://');
+  const cookieParts = ['gh_token=', 'HttpOnly', 'SameSite=Lax', 'Path=/', 'Max-Age=0'];
+  if (isSecure) {
+    cookieParts.push('Secure');
+  }
+  const cookie = cookieParts.join('; ');
   
   return {
     statusCode: 200,

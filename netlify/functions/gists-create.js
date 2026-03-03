@@ -1,12 +1,29 @@
 export const handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
+  if (event.httpMethod === 'OPTIONS') {
     return {
-      statusCode: 405,
-      body: JSON.stringify({ error: 'Method not allowed' }),
+      statusCode: 204,
+      headers: {
+        Allow: 'POST, PUT, PATCH, OPTIONS',
+      },
     };
   }
 
-  const cookies = event.headers.cookie || '';
+  if (!['POST', 'PUT', 'PATCH'].includes(event.httpMethod || '')) {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ error: `Method ${event.httpMethod} not allowed for ${event.path}` }),
+    };
+  }
+
+  const multiCookies =
+    event.multiValueHeaders?.cookie ||
+    event.multiValueHeaders?.Cookie ||
+    [];
+  const cookies =
+    event.headers.cookie ||
+    event.headers.Cookie ||
+    (Array.isArray(event.cookies) ? event.cookies.join('; ') : '') ||
+    (Array.isArray(multiCookies) ? multiCookies.join('; ') : '');
   const tokenMatch = cookies.match(/gh_token=([^;]+)/);
   const token = tokenMatch ? tokenMatch[1] : null;
 

@@ -5,7 +5,8 @@
 /api/auth/logout     /.netlify/functions/auth-logout     200
 /api/user/gists      /.netlify/functions/gists-user      200
 /api/gists/create    /.netlify/functions/gists-create    200
-/api/gists/*         /.netlify/functions/gist-by-id      200
+/api/gists           /.netlify/functions/gists-create    200
+/api/gists/:id       /.netlify/functions/gist-by-id      200
 
 # SPA fallback - must be last
 /*                   /index.html                         200

@@ -30,7 +30,19 @@ export const handler = async (event) => {
     }
 
     // Set httpOnly cookie with token
-    const cookie = `gh_token=${tokenData.access_token}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=2592000`;
+    const proto = event.headers['x-forwarded-proto'] || '';
+    const isSecure = proto.includes('https') || (process.env.URL || '').startsWith('https://');
+    const cookieParts = [
+      `gh_token=${tokenData.access_token}`,
+      'HttpOnly',
+      'SameSite=Lax',
+      'Path=/',
+      'Max-Age=2592000',
+    ];
+    if (isSecure) {
+      cookieParts.push('Secure');
+    }
+    const cookie = cookieParts.join('; ');
     
     // Redirect back to home
     return {
