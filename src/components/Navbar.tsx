@@ -21,9 +21,15 @@ import FileModal from "./FileModal";
 interface NavbarProps {
 	onNew: () => void;
 	onOpen: () => void;
+	onCreatePublicCopy: () => void;
 	onSave: () => void;
+	showVisibilityCheckbox: boolean;
+	canCreatePublicCopy: boolean;
 	filename: string;
 	onFilenameChange: (value: string) => void;
+	isPublic: boolean;
+	onVisibilityChange: (value: boolean) => void;
+	canUncheckBeforeFirstSave: boolean;
 	isSaving: boolean;
 	saveFeedback: "idle" | "success" | "error";
 	hasUnsavedChanges: boolean;
@@ -116,9 +122,15 @@ function SplitDownloadButton({
 export default function Navbar({
 	onNew,
 	onOpen,
+	onCreatePublicCopy,
 	onSave,
+	showVisibilityCheckbox,
+	canCreatePublicCopy,
 	filename,
 	onFilenameChange,
+	isPublic,
+	onVisibilityChange,
+	canUncheckBeforeFirstSave,
 	isSaving,
 	saveFeedback,
 	hasUnsavedChanges,
@@ -355,9 +367,15 @@ export default function Navbar({
 				onClose={() => setIsFileModalOpen(false)}
 				onNew={onNew}
 				onOpen={onOpen}
+				onCreatePublicCopy={onCreatePublicCopy}
 				canOpen={Boolean(user)}
+				showVisibilityCheckbox={showVisibilityCheckbox}
+				canCreatePublicCopy={canCreatePublicCopy}
 				filename={filename}
 				onFilenameChange={onFilenameChange}
+				isPublic={isPublic}
+				onVisibilityChange={onVisibilityChange}
+				canUncheckBeforeFirstSave={canUncheckBeforeFirstSave}
 			/>
 		</>
 	);

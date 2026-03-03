@@ -65,7 +65,12 @@ export const handler = async (event) => {
     }
 
     try {
-      const { description, files } = JSON.parse(event.body || '{}');
+      const { description, files, public: isPublic } = JSON.parse(event.body || '{}');
+      const updatePayload = {
+        description,
+        files,
+        ...(isPublic === true ? { public: true } : {}),
+      };
 
       const response = await fetch(`https://api.github.com/gists/${id}`, {
         method: 'PATCH',
@@ -74,10 +79,7 @@ export const handler = async (event) => {
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          description,
-          files,
-        }),
+        body: JSON.stringify(updatePayload),
       });
 
       if (!response.ok) {

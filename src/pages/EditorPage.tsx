@@ -26,6 +26,8 @@ export default function EditorPage() {
 	const [originalFilename, setOriginalFilename] = useState<string | null>(null);
 	const [isFilenameManuallyEdited, setIsFilenameManuallyEdited] = useState(false);
 	const [isPreview, setIsPreview] = useState(false);
+	const [isPublic, setIsPublic] = useState(false);
+	const [isPersistedPublic, setIsPersistedPublic] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [saveFeedback, setSaveFeedback] = useState<
 		"idle" | "success" | "error"
@@ -69,11 +71,13 @@ export default function EditorPage() {
 				description?: string;
 				filename?: string;
 				isFilenameManuallyEdited?: boolean;
+				isPublic?: boolean;
 			};
 			setContent(draft.content ?? "");
 			setDescription(draft.description ?? "");
 			setFilename(draft.filename || DEFAULT_MARKDOWN_FILENAME);
 			setIsFilenameManuallyEdited(Boolean(draft.isFilenameManuallyEdited));
+			setIsPublic(Boolean(draft.isPublic));
 			markDirty();
 		} catch (error) {
 			console.error("Failed to restore login draft:", error);
@@ -98,6 +102,8 @@ export default function EditorPage() {
 				setOriginalFilename(mdFile.filename);
 				setIsFilenameManuallyEdited(true);
 				setDescription(gist.description || "");
+				setIsPublic(gist.public);
+				setIsPersistedPublic(gist.public);
 				setOriginalOwner(gist.owner.login);
 				setCurrentGistId(id);
 				markClean();
@@ -108,32 +114,36 @@ export default function EditorPage() {
 		}
 	};
 
-	const handleSave = async () => {
+	const saveGist = async (createPublicCopy = false) => {
 		if (!user) {
 			alert("Please log in to save");
 			return;
 		}
 
-	setSaveFeedback("idle");
-	setIsSaving(true);
-	try {
-		const filenameToSave =
-			filename.trim().length > 0
-				? filename
-				: originalFilename || deriveMarkdownFilenameFromContent(content);
-		const normalizedFilename = normalizeMarkdownFilename(filenameToSave);
-		const isOwner = originalOwner === user.login;
+		setSaveFeedback("idle");
+		setIsSaving(true);
+		try {
+			const filenameToSave =
+				filename.trim().length > 0
+					? filename
+					: originalFilename || deriveMarkdownFilenameFromContent(content);
+			const normalizedFilename = normalizeMarkdownFilename(filenameToSave);
+			const isOwner = originalOwner === user.login;
+			const shouldCreatePublicCopy = Boolean(
+				createPublicCopy && currentGistId && isOwner && !isPersistedPublic,
+			);
 			const endpoint =
-				currentGistId && isOwner
+				currentGistId && isOwner && !shouldCreatePublicCopy
 					? `/api/gists/${currentGistId}`
-					: "/api/gists/create";
-
-			const method = currentGistId && isOwner ? "PATCH" : "POST";
+					: "/api/gists";
+			const method =
+				currentGistId && isOwner && !shouldCreatePublicCopy ? "PATCH" : "POST";
 			const files: Record<string, { content: string } | null> = {};
 
 			if (
 				currentGistId &&
 				isOwner &&
+				!shouldCreatePublicCopy &&
 				originalFilename &&
 				originalFilename !== normalizedFilename
 			) {
@@ -148,15 +158,28 @@ export default function EditorPage() {
 				body: JSON.stringify({
 					description,
 					files,
-					public: true,
+					public: shouldCreatePublicCopy ? true : isPublic,
 				}),
 			});
 
-			if (!response.ok) throw new Error("Failed to save gist");
+			if (!response.ok) {
+				let message = "Failed to save gist";
+				try {
+					const errorData = await response.json();
+					if (errorData?.error) {
+						message = errorData.error;
+					}
+				} catch {
+					// ignore JSON parse errors and keep default message
+				}
+				throw new Error(message);
+			}
 
 			const savedGist: Gist = await response.json();
 			setCurrentGistId(savedGist.id);
 			setOriginalOwner(user.login);
+			setIsPublic(savedGist.public);
+			setIsPersistedPublic(savedGist.public);
 			setFilename(normalizedFilename);
 			setOriginalFilename(normalizedFilename);
 			window.sessionStorage.removeItem(LOGIN_DRAFT_STORAGE_KEY);
@@ -168,11 +191,14 @@ export default function EditorPage() {
 		} catch (error) {
 			console.error("Error saving gist:", error);
 			setSaveFeedback("error");
-			alert("Failed to save gist");
+			alert(error instanceof Error ? error.message : "Failed to save gist");
 		} finally {
 			setIsSaving(false);
 		}
 	};
+
+	const handleSave = async () => saveGist(false);
+	const handleCreatePublicCopy = async () => saveGist(true);
 
 	const handleNew = () => {
 		if (hasUnsavedChanges && !confirm("You have unsaved changes. Continue?")) {
@@ -185,6 +211,8 @@ export default function EditorPage() {
 		setIsFilenameManuallyEdited(false);
 		setCurrentGistId(null);
 		setOriginalOwner(null);
+		setIsPublic(false);
+		setIsPersistedPublic(false);
 		setIsPreview(false);
 		window.sessionStorage.removeItem(LOGIN_DRAFT_STORAGE_KEY);
 		markClean();
@@ -200,6 +228,7 @@ export default function EditorPage() {
 				description,
 				filename,
 				isFilenameManuallyEdited,
+				isPublic,
 			}),
 		);
 	};
@@ -215,6 +244,11 @@ export default function EditorPage() {
 	const handleFilenameChange = (value: string) => {
 		setFilename(value);
 		setIsFilenameManuallyEdited(true);
+		markDirty();
+	};
+
+	const handleVisibilityChange = (value: boolean) => {
+		setIsPublic(value);
 		markDirty();
 	};
 
@@ -382,15 +416,24 @@ export default function EditorPage() {
 	});
 
 	const isOwner = user && originalOwner === user.login;
+	const showVisibilityCheckbox = !currentGistId;
+	const canCreatePublicCopy = Boolean(currentGistId && isOwner && !isPersistedPublic);
+	const canUncheckBeforeFirstSave = !currentGistId;
 
 	return (
 		<div className="h-screen flex flex-col">
 			<Navbar
 				onNew={handleNew}
 				onOpen={handleOpenGist}
+				onCreatePublicCopy={handleCreatePublicCopy}
 				onSave={handleSave}
+				showVisibilityCheckbox={showVisibilityCheckbox}
+				canCreatePublicCopy={canCreatePublicCopy}
 				filename={filename}
 				onFilenameChange={handleFilenameChange}
+				isPublic={isPublic}
+				onVisibilityChange={handleVisibilityChange}
+				canUncheckBeforeFirstSave={canUncheckBeforeFirstSave}
 				isSaving={isSaving}
 				saveFeedback={saveFeedback}
 				hasUnsavedChanges={hasUnsavedChanges}

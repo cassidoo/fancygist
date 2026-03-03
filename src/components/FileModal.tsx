@@ -5,9 +5,15 @@ interface FileModalProps {
 	onClose: () => void;
 	onNew: () => void;
 	onOpen: () => void;
+	onCreatePublicCopy: () => void;
 	canOpen: boolean;
+	showVisibilityCheckbox: boolean;
+	canCreatePublicCopy: boolean;
 	filename: string;
 	onFilenameChange: (value: string) => void;
+	isPublic: boolean;
+	onVisibilityChange: (value: boolean) => void;
+	canUncheckBeforeFirstSave: boolean;
 }
 
 export default function FileModal({
@@ -15,9 +21,15 @@ export default function FileModal({
 	onClose,
 	onNew,
 	onOpen,
+	onCreatePublicCopy,
 	canOpen,
+	showVisibilityCheckbox,
+	canCreatePublicCopy,
 	filename,
 	onFilenameChange,
+	isPublic,
+	onVisibilityChange,
+	canUncheckBeforeFirstSave,
 }: FileModalProps) {
 	return (
 		<AnimatePresence>
@@ -90,6 +102,40 @@ export default function FileModal({
 										aria-label="Filename"
 									/>
 								</div>
+								{showVisibilityCheckbox && (
+									<>
+										<label className="flex items-center gap-2 text-sm text-gray-700">
+											<input
+												type="checkbox"
+												checked={isPublic}
+												onChange={(e) => onVisibilityChange(e.target.checked)}
+												className="h-4 w-4 rounded border-gray-300 text-gray-700 focus:ring-gray-300"
+											/>
+											Public gist (unchecked = secret)
+										</label>
+										{canUncheckBeforeFirstSave && isPublic && (
+											<p className="text-xs text-gray-500">
+												You can uncheck this before your first save.
+											</p>
+										)}
+									</>
+								)}
+								{canCreatePublicCopy && (
+									<>
+										<button
+											onClick={() => {
+												onClose();
+												onCreatePublicCopy();
+											}}
+											className="w-full text-left px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors cursor-pointer"
+										>
+											Create new public gist from this secret gist
+										</button>
+										<p className="text-xs text-gray-500">
+											This keeps the current gist secret and creates a new public copy.
+										</p>
+									</>
+								)}
 							</div>
 							<div className="p-6 border-t border-gray-200">
 								<button
