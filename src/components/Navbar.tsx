@@ -244,33 +244,51 @@ export default function Navbar({
 								/>
 
 								{isDownloadMenuOpen && (
-									<>
-										<div
-											className="fixed inset-0 z-10"
-											onClick={() => setIsDownloadMenuOpen(false)}
-										/>
-										<div className="absolute right-0 z-20 mt-2 w-44 bg-white rounded-md shadow-md py-1 border border-gray-200">
-											<button
-												onClick={() => {
-													setIsDownloadMenuOpen(false);
-													onDownloadHtml();
-												}}
-												className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-											>
-												Download as HTML
-											</button>
-											<button
-												onClick={() => {
-													setIsDownloadMenuOpen(false);
-													onDownloadPdf();
-												}}
-												className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-											>
-												Download as PDF
-											</button>
-										</div>
-									</>
+									<div
+										className="fixed inset-0 z-10"
+										onClick={() => setIsDownloadMenuOpen(false)}
+									/>
 								)}
+								<div
+									className="absolute right-0 z-20 mt-2"
+									style={{ perspective: 600 }}
+								>
+									<AnimatePresence>
+										{isDownloadMenuOpen && (
+											<motion.div
+												className="w-44 bg-white rounded-md shadow-md py-1 border border-gray-200"
+												style={{ transformOrigin: "top right" }}
+												initial={{ scale: 0.7, opacity: 0 }}
+												animate={{ scale: 1, opacity: 1 }}
+												exit={{ scale: 0.7, opacity: 0 }}
+												transition={{
+													type: "spring",
+													stiffness: 500,
+													damping: 30,
+												}}
+											>
+												<button
+													onClick={() => {
+														setIsDownloadMenuOpen(false);
+														onDownloadHtml();
+													}}
+													className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+												>
+													Download as HTML
+												</button>
+												<button
+													onClick={() => {
+														setIsDownloadMenuOpen(false);
+														onDownloadPdf();
+													}}
+													className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+												>
+													Download as PDF
+												</button>
+											</motion.div>
+										)}
+									</AnimatePresence>
+								</div>
 							</div>
 						)}
 
