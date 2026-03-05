@@ -12,6 +12,58 @@ export interface SlashCommand {
 
 export const slashCommands: SlashCommand[] = [
 	{
+		label: "toc",
+		description: "Generate a table of contents from headings",
+		action: (view, from, to) => {
+			const doc = view.state.doc.toString();
+			const lines = doc.split(/\r?\n/);
+
+			const headingRegex = /^(#{1,6})\s+(.+?)(?:\s+#+)?$/;
+			const headings: { level: number; text: string }[] = [];
+
+			for (const line of lines) {
+				const match = line.match(headingRegex);
+				if (match) {
+					headings.push({ level: match[1].length, text: match[2].trim() });
+				}
+			}
+
+			if (headings.length === 0) {
+				view.dispatch(
+					view.state.update({
+						changes: { from, to, insert: "" },
+						selection: { anchor: from },
+					}),
+				);
+				return;
+			}
+
+			const minLevel = Math.min(...headings.map((h) => h.level));
+
+			const toId = (text: string) =>
+				text
+					.toLowerCase()
+					.trim()
+					.replace(/[^\w\s-]/g, "")
+					.replace(/\s+/g, "-");
+
+			const tocLines = headings.map(({ level, text }) => {
+				const indent = "  ".repeat(level - minLevel);
+				const id = toId(text);
+				return `${indent}- [${text}](#${id})`;
+			});
+
+			const toc = "**Table of contents**\n" + tocLines.join("\n");
+
+			view.dispatch(
+				view.state.update({
+					changes: { from, to, insert: toc },
+					selection: { anchor: from + toc.length },
+				}),
+			);
+		},
+	},
+	{
 		label: "table",
 		description: "Insert a markdown table",
 		content: `| Column 1 | Column 2 | Column 3 |
