@@ -7,10 +7,10 @@ import { EditorView, keymap } from "@codemirror/view";
 import { Prec } from "@codemirror/state";
 import type { ReactCodeMirrorRef } from "@uiw/react-codemirror";
 import SlashCommandMenu, {
+	getEmojiCommands,
 	slashCommands,
 	type SlashCommand,
-} from "./SlashCommandMenu";
-import { searchEmojiOptions } from "../utils/emoji";
+} from "./CommandMenu";
 
 // @ts-ignore
 import "rehype-callouts/theme/github";
@@ -44,15 +44,7 @@ export default function Editor({ value, onChange }: EditorProps) {
 		return matchesQuery;
 	});
 	const emojiCommands = useMemo(
-		() =>
-			searchEmojiOptions(searchQuery).map(
-				(option): SlashCommand => ({
-					label: `:${option.alias}:`,
-					description: `${option.emoji} ${option.description}`,
-					content: `:${option.alias}:`,
-					inline: true,
-				}),
-			),
+		() => getEmojiCommands(searchQuery),
 		[searchQuery],
 	);
 	const activeCommands =
