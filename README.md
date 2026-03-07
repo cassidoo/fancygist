@@ -11,6 +11,7 @@ A beautiful, minimal markdown editor backed by GitHub Gists. Write, share, and e
 - 🔗 **Shareable URLs**: Share docs at `fancygist.com/@username/gist-id`
 - 📝 **GitHub Flavored Markdown**: Full support for tables, code blocks, task lists, and more
 - 🎯 **Syntax Highlighting**: Beautiful code highlighting in previews
+- 😀 **Emoji Autocomplete**: Type `:` to search and insert emoji shortcodes
 - 🍴 **Fork on Edit**: Edit someone else's gist? It creates a fork automatically when you save it.
 - ⌨️ **Keyboard Shortcuts**: `Ctrl/Cmd+S` to save, `Ctrl/Cmd+N` for new.
 

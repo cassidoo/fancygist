@@ -10,6 +10,7 @@ import SlashCommandMenu, {
 	slashCommands,
 	type SlashCommand,
 } from "./SlashCommandMenu";
+import { searchEmojiOptions } from "../utils/emoji";
 
 // @ts-ignore
 import "rehype-callouts/theme/github";
@@ -24,8 +25,9 @@ export default function Editor({ value, onChange }: EditorProps) {
 	const [showMenu, setShowMenu] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedIndex, setSelectedIndex] = useState(0);
-	const slashStartPosRef = useRef(0);
+	const menuStartPosRef = useRef(0);
 	const [isInlineTrigger, setIsInlineTrigger] = useState(false);
+	const [menuMode, setMenuMode] = useState<"slash" | "emoji">("slash");
 
 	// Refs so the keymap always sees current state
 	const showMenuRef = useRef(false);
@@ -41,6 +43,20 @@ export default function Editor({ value, onChange }: EditorProps) {
 		}
 		return matchesQuery;
 	});
+	const emojiCommands = useMemo(
+		() =>
+			searchEmojiOptions(searchQuery).map(
+				(option): SlashCommand => ({
+					label: `:${option.alias}:`,
+					description: `${option.emoji} ${option.description}`,
+					content: `:${option.alias}:`,
+					inline: true,
+				}),
+			),
+		[searchQuery],
+	);
+	const activeCommands =
+		menuMode === "emoji" ? emojiCommands : filteredCommands;
 
 	useEffect(() => {
 		showMenuRef.current = showMenu;
@@ -49,8 +65,8 @@ export default function Editor({ value, onChange }: EditorProps) {
 		selectedIndexRef.current = selectedIndex;
 	}, [selectedIndex]);
 	useEffect(() => {
-		filteredCommandsRef.current = filteredCommands;
-	});
+		filteredCommandsRef.current = activeCommands;
+	}, [activeCommands]);
 
 	// Auto-focus editor on mount
 	useEffect(() => {
@@ -64,7 +80,7 @@ export default function Editor({ value, onChange }: EditorProps) {
 		const view = editorRef.current?.view;
 		if (!view) return;
 		const cursorPos = view.state.selection.main.head;
-		const from = slashStartPosRef.current;
+		const from = menuStartPosRef.current;
 
 		if (command.action) {
 			command.action(view, from, cursorPos);
@@ -152,15 +168,26 @@ export default function Editor({ value, onChange }: EditorProps) {
 
 		const beforeCursor = lineText.slice(0, cursorPosInLine);
 		const slashMatch = beforeCursor.match(/(?:^|\s)\/(\w*)$/);
+		const emojiMatch = beforeCursor.match(/(?:^|[\s([{]):([a-z0-9_+-]*)$/i);
 
-		if (slashMatch) {
+		if (emojiMatch) {
+			setMenuMode("emoji");
+			setIsInlineTrigger(true);
+			setSearchQuery(emojiMatch[1].toLowerCase());
+			const emojiOffsetInMatch = emojiMatch[0].lastIndexOf(":");
+			menuStartPosRef.current =
+				lineStart + (emojiMatch.index ?? 0) + emojiOffsetInMatch;
+			setSelectedIndex(0);
+			setShowMenu(true);
+		} else if (slashMatch) {
+			setMenuMode("slash");
 			const isInline = slashMatch.index !== undefined && slashMatch.index > 0;
 			setIsInlineTrigger(isInline);
 			setSearchQuery(slashMatch[1]);
 			const slashOffset = isInline
 				? slashMatch.index + 1
 				: (slashMatch.index ?? 0);
-			slashStartPosRef.current = lineStart + slashOffset;
+			menuStartPosRef.current = lineStart + slashOffset;
 			setSelectedIndex(0);
 			setShowMenu(true);
 		} else {
@@ -188,15 +215,16 @@ export default function Editor({ value, onChange }: EditorProps) {
 					highlightActiveLineGutter: true,
 					highlightActiveLine: true,
 				}}
-				placeholder="Start typing... (try typing / at the start of a line)"
+				placeholder="Start typing... (try / for commands or : for emoji)"
 			/>
 
 			{showMenu && (
 				<SlashCommandMenu
-					commands={filteredCommands}
+					commands={activeCommands}
 					selectedIndex={selectedIndex}
 					onSelect={(cmd) => doInsert(cmd)}
 					onClose={() => setShowMenu(false)}
+					displayPrefix={menuMode === "emoji" ? "" : "/"}
 				/>
 			)}
 		</div>

@@ -1,5 +1,6 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkGemoji from "remark-gemoji";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeCallouts from "rehype-callouts";
@@ -126,7 +127,7 @@ export default function MarkdownPreview({ content }: MarkdownPreviewProps) {
 		<div className="h-full overflow-auto bg-white">
 			<article className="markdown-preview prose prose-sm max-w-3xl mx-auto px-6 py-16">
 				<ReactMarkdown
-					remarkPlugins={[remarkGfm]}
+					remarkPlugins={[remarkGfm, remarkGemoji]}
 					rehypePlugins={[
 						rehypeRaw,
 						[rehypeSanitize, sanitizeSchema],

@@ -242,6 +242,7 @@ interface SlashCommandMenuProps {
 	selectedIndex: number;
 	onSelect: (command: SlashCommand) => void;
 	onClose: () => void;
+	displayPrefix?: string;
 }
 
 export default function SlashCommandMenu({
@@ -249,6 +250,7 @@ export default function SlashCommandMenu({
 	selectedIndex,
 	onSelect,
 	onClose,
+	displayPrefix = "/",
 }: SlashCommandMenuProps) {
 	const menuRef = useRef<HTMLDivElement>(null);
 
@@ -302,7 +304,8 @@ export default function SlashCommandMenu({
 								}`}
 							>
 								<div className="font-medium text-sm text-gray-900">
-									/{command.label}
+									{displayPrefix}
+									{command.label}
 								</div>
 								<div className="text-xs text-gray-500">
 									{command.description}
