@@ -439,7 +439,6 @@ export default function EditorPage() {
 				hasUnsavedChanges={hasUnsavedChanges}
 				isPreview={isPreview}
 				onTogglePreview={() => setIsPreview(!isPreview)}
-				isOwner={isOwner || false}
 				gistUrl={
 					currentGistId && originalOwner
 						? `/@${originalOwner}/${currentGistId}`

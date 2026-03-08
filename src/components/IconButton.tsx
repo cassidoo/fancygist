@@ -8,6 +8,7 @@ interface IconButtonProps {
 	disabled?: boolean;
 	variant?: "default" | "primary";
 	className?: string;
+	forceExpanded?: boolean;
 }
 
 const ICON_SIZE = 36;
@@ -21,6 +22,7 @@ export default function IconButton({
 	disabled = false,
 	variant = "default",
 	className = "",
+	forceExpanded = false,
 }: IconButtonProps) {
 	const [hovered, setHovered] = useState(false);
 	const labelRef = useRef<HTMLSpanElement>(null);
@@ -32,7 +34,7 @@ export default function IconButton({
 		}
 	}, [label]);
 
-	const expanded = hovered && !disabled;
+	const expanded = (hovered || forceExpanded) && !disabled;
 	const targetWidth = expanded
 		? ICON_SIZE + GAP + labelWidth + PAD_RIGHT
 		: ICON_SIZE;
@@ -44,12 +46,13 @@ export default function IconButton({
 		variant === "primary"
 			? "bg-lime-600 text-white hover:bg-lime-700"
 			: "text-gray-700 hover:bg-gray-100";
+	const expandedClasses = variant === "default" && expanded ? "bg-gray-100" : "";
 
 	const spring = { type: "spring" as const, stiffness: 500, damping: 30 };
 
 	return (
 		<motion.button
-			className={`${baseClasses} ${variantClasses} ${className}`}
+			className={`${baseClasses} ${variantClasses} ${expandedClasses} ${className}`}
 			onClick={onClick}
 			disabled={disabled}
 			onMouseEnter={() => setHovered(true)}
