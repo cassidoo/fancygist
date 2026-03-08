@@ -72,7 +72,10 @@ export default function FileMenu({
 						htmlFor="file-name-input"
 						className="block text-sm font-medium text-gray-700 mb-1"
 					>
-						File name
+						Gist name{" "}
+						<span className="text-xs font-normal text-gray-500">
+							(changes apply after save)
+						</span>
 					</label>
 					<input
 						id="file-name-input"
