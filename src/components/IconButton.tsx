@@ -1,5 +1,5 @@
-import { motion } from "framer-motion";
-import { useRef, useState, useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
+import Tooltip from "./Tooltip";
 
 interface IconButtonProps {
 	icon: ReactNode;
@@ -11,10 +11,6 @@ interface IconButtonProps {
 	forceExpanded?: boolean;
 }
 
-const ICON_SIZE = 36;
-const GAP = 6;
-const PAD_RIGHT = 10;
-
 export default function IconButton({
 	icon,
 	label,
@@ -22,59 +18,27 @@ export default function IconButton({
 	disabled = false,
 	variant = "default",
 	className = "",
-	forceExpanded = false,
 }: IconButtonProps) {
-	const [hovered, setHovered] = useState(false);
-	const labelRef = useRef<HTMLSpanElement>(null);
-	const [labelWidth, setLabelWidth] = useState(0);
-
-	useEffect(() => {
-		if (labelRef.current) {
-			setLabelWidth(labelRef.current.scrollWidth);
-		}
-	}, [label]);
-
-	const expanded = (hovered || forceExpanded) && !disabled;
-	const targetWidth = expanded
-		? ICON_SIZE + GAP + labelWidth + PAD_RIGHT
-		: ICON_SIZE;
-
 	const baseClasses =
-		"inline-flex items-center h-9 rounded-full cursor-pointer overflow-hidden whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed";
+		"inline-flex items-center justify-center w-9 h-9 rounded-full cursor-pointer transition-colors disabled:opacity-50 disabled:cursor-not-allowed";
 
 	const variantClasses =
 		variant === "primary"
 			? "bg-lime-600 text-white hover:bg-lime-700"
 			: "text-gray-700 hover:bg-gray-100";
-	const expandedClasses = variant === "default" && expanded ? "bg-gray-100" : "";
-
-	const spring = { type: "spring" as const, stiffness: 500, damping: 30 };
 
 	return (
-		<motion.button
-			className={`${baseClasses} ${variantClasses} ${expandedClasses} ${className}`}
-			onClick={onClick}
-			disabled={disabled}
-			onMouseEnter={() => setHovered(true)}
-			onMouseLeave={() => setHovered(false)}
-			onFocus={() => setHovered(true)}
-			onBlur={() => setHovered(false)}
-			title={label}
-			animate={{ width: targetWidth }}
-			transition={spring}
-			style={{ minWidth: ICON_SIZE }}
-		>
-			<span className="flex-shrink-0 flex items-center justify-center w-9 h-9">
-				{icon}
-			</span>
-			<motion.span
-				ref={labelRef}
-				className="text-sm font-medium"
-				animate={{ opacity: expanded ? 1 : 0 }}
-				transition={{ duration: expanded ? 0.15 : 0.1 }}
+		<Tooltip label={label}>
+			<button
+				className={`${baseClasses} ${variantClasses} ${className}`}
+				onClick={onClick}
+				disabled={disabled}
+				aria-label={label}
 			>
-				{label}
-			</motion.span>
-		</motion.button>
+				<span className="flex items-center justify-center w-9 h-9">
+					{icon}
+				</span>
+			</button>
+		</Tooltip>
 	);
 }
