@@ -420,6 +420,9 @@ export default function EditorPage() {
 	const canCreatePublicCopy = Boolean(currentGistId && isOwner && !isPersistedPublic);
 	const canUncheckBeforeFirstSave = !currentGistId;
 
+	const charCount = content.length;
+	const wordCount = content.trim() === "" ? 0 : content.trim().split(/\s+/).length;
+
 	return (
 		<div className="h-screen flex flex-col">
 			<Navbar
@@ -456,12 +459,16 @@ export default function EditorPage() {
 				onSelectGist={handleSelectGist}
 			/>
 
-			<div className="flex-1 overflow-hidden">
+			<div className="flex-1 overflow-hidden relative">
 				{isPreview ? (
 					<MarkdownPreview content={content} />
 				) : (
 					<Editor value={content} onChange={handleContentChange} />
 				)}
+				<div className="absolute bottom-2 right-3 text-xs text-gray-500 dark:text-gray-400 bg-white/70 dark:bg-gray-900/70 px-2 py-0.5 rounded pointer-events-none select-none">
+					{wordCount} {wordCount === 1 ? "word" : "words"} • {charCount}{" "}
+					{charCount === 1 ? "character" : "characters"}
+				</div>
 			</div>
 		</div>
 	);
