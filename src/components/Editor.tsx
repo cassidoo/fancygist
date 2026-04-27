@@ -18,9 +18,10 @@ import "rehype-callouts/theme/github";
 interface EditorProps {
 	value: string;
 	onChange: (value: string) => void;
+	onOpenLicenseModal?: (insertCallback: (text: string) => void) => void;
 }
 
-export default function Editor({ value, onChange }: EditorProps) {
+export default function Editor({ value, onChange, onOpenLicenseModal }: EditorProps) {
 	const editorRef = useRef<ReactCodeMirrorRef>(null);
 	const [showMenu, setShowMenu] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -68,11 +69,42 @@ export default function Editor({ value, onChange }: EditorProps) {
 		return () => clearTimeout(timer);
 	}, []);
 
+	const insertText = (text: string) => {
+		const view = editorRef.current?.view;
+		if (!view) return;
+		const cursorPos = view.state.selection.main.head;
+		
+		view.dispatch(
+			view.state.update({
+				changes: { from: cursorPos, to: cursorPos, insert: text },
+				selection: { anchor: cursorPos + text.length },
+			}),
+		);
+		view.focus();
+	};
+
 	const doInsert = (command: SlashCommand) => {
 		const view = editorRef.current?.view;
 		if (!view) return;
 		const cursorPos = view.state.selection.main.head;
 		const from = menuStartPosRef.current;
+
+		// Handle modal-triggering commands
+		if (command.modalId === "license" && onOpenLicenseModal) {
+			// Remove the /license command text
+			view.dispatch(
+				view.state.update({
+					changes: { from, to: cursorPos, insert: "" },
+					selection: { anchor: from },
+				}),
+			);
+			setShowMenu(false);
+			view.focus();
+			
+			// Open the license modal with a callback to insert selected license
+			onOpenLicenseModal(insertText);
+			return;
+		}
 
 		if (command.action) {
 			command.action(view, from, cursorPos);
