@@ -118,7 +118,7 @@ export default function Navbar({
 									}
 									label="File"
 									onClick={() => setIsFileMenuOpen((prev) => !prev)}
-									forceExpanded={isFileMenuOpen}
+	
 								/>
 							}
 							onNew={onNew}
