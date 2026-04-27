@@ -4,6 +4,7 @@ import Editor from "../components/Editor";
 import MarkdownPreview from "../components/MarkdownPreview";
 import Navbar from "../components/Navbar";
 import OpenGistModal from "../components/OpenGistModal";
+import LicenseModal from "../components/LicenseModal";
 import { useAuth } from "../contexts/AuthContext";
 import { useKeyboardShortcut } from "../hooks/useKeyboardShortcut";
 import { useUnsavedChanges } from "../hooks/useUnsavedChanges";
@@ -33,6 +34,8 @@ export default function EditorPage() {
 		"idle" | "success" | "error"
 	>("idle");
 	const [isOpenModalOpen, setIsOpenModalOpen] = useState(false);
+	const [isLicenseModalOpen, setIsLicenseModalOpen] = useState(false);
+	const [licenseInsertCallback, setLicenseInsertCallback] = useState<((text: string) => void) | null>(null);
 	const [currentGistId, setCurrentGistId] = useState<string | null>(
 		gistId || null,
 	);
@@ -406,6 +409,19 @@ export default function EditorPage() {
 		navigate(`/@${owner}/${gistId}`);
 	};
 
+	const handleOpenLicenseModal = (insertCallback: (text: string) => void) => {
+		setLicenseInsertCallback(() => insertCallback);
+		setIsLicenseModalOpen(true);
+	};
+
+	const handleSelectLicense = (licenseText: string) => {
+		if (licenseInsertCallback) {
+			licenseInsertCallback(licenseText);
+		}
+		setIsLicenseModalOpen(false);
+		setLicenseInsertCallback(null);
+	};
+
 	// Keyboard shortcuts
 	useKeyboardShortcut("s", handleSave, { ctrl: true });
 	useKeyboardShortcut("k", handleNew, { ctrl: true, shift: true });
@@ -459,11 +475,21 @@ export default function EditorPage() {
 				onSelectGist={handleSelectGist}
 			/>
 
+			<LicenseModal
+				isOpen={isLicenseModalOpen}
+				onClose={() => setIsLicenseModalOpen(false)}
+				onSelectLicense={handleSelectLicense}
+			/>
+
 			<div className="flex-1 overflow-hidden relative">
 				{isPreview ? (
 					<MarkdownPreview content={content} />
 				) : (
-					<Editor value={content} onChange={handleContentChange} />
+					<Editor
+						value={content}
+						onChange={handleContentChange}
+						onOpenLicenseModal={handleOpenLicenseModal}
+					/>
 				)}
 				<div className="absolute bottom-2 right-3 text-xs text-gray-500 dark:text-gray-400 bg-white/70 dark:bg-gray-900/70 px-2 py-0.5 rounded pointer-events-none select-none">
 					{wordCount} {wordCount === 1 ? "word" : "words"} • {charCount}{" "}
