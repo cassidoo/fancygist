@@ -39,7 +39,7 @@ export default function FileMenu({
 			isOpen={isOpen}
 			onClose={onClose}
 			trigger={trigger}
-			panelClassName="w-full sm:w-80 bg-white rounded-md shadow-md py-2 border border-gray-200"
+			panelClassName="w-full sm:w-80 bg-white dark:bg-gray-800 rounded-md shadow-md py-2 border border-gray-200 dark:border-gray-700"
 			panelPositionClassName="sm:left-0 sm:mt-2"
 			panelOriginClassName="origin-top sm:origin-top-left"
 		>
@@ -49,7 +49,7 @@ export default function FileMenu({
 						onClose();
 						onNew();
 					}}
-					className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+					className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
 				>
 					New gist
 				</button>
@@ -59,21 +59,21 @@ export default function FileMenu({
 							onClose();
 							onOpen();
 						}}
-						className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+						className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
 					>
 						Open gist
 					</button>
 				)}
 			</div>
-			<div className="my-2 border-t border-gray-200" />
+			<div className="my-2 border-t border-gray-200 dark:border-gray-700" />
 			<div className="px-3 pb-2 space-y-3">
 				<div>
 					<label
 						htmlFor="file-name-input"
-						className="block text-sm font-medium text-gray-700 mb-1"
+						className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
 					>
 						Gist name{" "}
-						<span className="text-xs font-normal text-gray-500">
+						<span className="text-xs font-normal text-gray-500 dark:text-gray-400">
 							(changes apply after save)
 						</span>
 					</label>
@@ -82,24 +82,24 @@ export default function FileMenu({
 						type="text"
 						value={filename}
 						onChange={(e) => onFilenameChange(e.target.value)}
-						className="h-10 w-full rounded-md border border-gray-200 px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300"
+						className="h-10 w-full rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 text-sm text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500"
 						placeholder="filename.md"
 						aria-label="Filename"
 					/>
 				</div>
 				{showVisibilityCheckbox && (
 					<div className="space-y-1">
-						<label className="flex items-center gap-2 text-sm text-gray-700">
+						<label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
 							<input
 								type="checkbox"
 								checked={isPublic}
 								onChange={(e) => onVisibilityChange(e.target.checked)}
-								className="h-4 w-4 rounded border-gray-300 text-gray-700 focus:ring-gray-300"
+								className="h-4 w-4 rounded border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 focus:ring-gray-300 dark:focus:ring-gray-500"
 							/>
 							Public gist (unchecked = secret)
 						</label>
 						{canUncheckBeforeFirstSave && isPublic && (
-							<p className="text-xs text-gray-500">
+							<p className="text-xs text-gray-500 dark:text-gray-400">
 								You can uncheck this before your first save.
 							</p>
 						)}
@@ -112,11 +112,11 @@ export default function FileMenu({
 								onClose();
 								onCreatePublicCopy();
 							}}
-							className="w-full text-left px-3 py-2 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md cursor-pointer"
+							className="w-full text-left px-3 py-2 text-sm text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md cursor-pointer"
 						>
 							New public gist from this secret gist
 						</button>
-						<p className="text-xs text-gray-500">
+						<p className="text-xs text-gray-500 dark:text-gray-400">
 							This keeps the current gist secret and creates a new public copy.
 						</p>
 					</div>

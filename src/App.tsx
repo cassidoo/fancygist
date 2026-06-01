@@ -1,11 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import ThemeEffects from "./components/ThemeEffects";
 import EditorPage from "./pages/EditorPage";
 import "./index.css";
 
 function App() {
 	return (
 		<AuthProvider>
+			<ThemeEffects />
 			<BrowserRouter>
 				<Routes>
 					<Route path="/" element={<EditorPage />} />

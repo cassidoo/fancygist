@@ -424,7 +424,7 @@ export default function EditorPage() {
 	const wordCount = content.trim() === "" ? 0 : content.trim().split(/\s+/).length;
 
 	return (
-		<div className="h-screen flex flex-col">
+		<div className="h-screen flex flex-col bg-white dark:bg-gray-900">
 			<Navbar
 				onNew={handleNew}
 				onOpen={handleOpenGist}
