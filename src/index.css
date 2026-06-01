@@ -33,6 +33,10 @@ body {
 	line-height: 1.75;
 }
 
+.dark .cm-ia-editor .cm-editor {
+	background-color: transparent !important;
+}
+
 .cm-ia-editor .cm-scroller {
 	font-family:
 		"SF Mono", "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular,
