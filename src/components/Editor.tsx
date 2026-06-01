@@ -190,7 +190,7 @@ export default function Editor({ value, onChange }: EditorProps) {
 	};
 
 	return (
-		<div className="h-full w-full overflow-auto bg-white dark:bg-gray-900 relative">
+		<div className="h-full w-full overflow-auto bg-white dark:bg-transparent relative">
 			<CodeMirror
 				ref={editorRef}
 				value={value}

@@ -36,7 +36,7 @@ export default function SplitDownloadButton({
 
 	return (
 		<motion.div
-			className={`inline-flex items-center justify-between h-9 rounded-full overflow-hidden text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 ${expanded ? "bg-gray-100 dark:bg-gray-800" : ""}`}
+			className={`inline-flex items-center justify-between h-9 rounded-full overflow-hidden text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-800 ${expanded ? "bg-gray-100 dark:bg-neutral-800" : ""}`}
 			onMouseEnter={() => setHovered(true)}
 			onMouseLeave={() => setHovered(false)}
 			animate={{ width: targetWidth }}
@@ -65,7 +65,7 @@ export default function SplitDownloadButton({
 					e.stopPropagation();
 					onOpenMenu();
 				}}
-				className={`flex-shrink-0 flex items-center justify-center h-9 w-7 border-l border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 ${menuOpen ? "bg-gray-200 dark:bg-gray-700" : ""}`}
+				className={`flex-shrink-0 flex items-center justify-center h-9 w-7 border-l border-gray-200 dark:border-neutral-700 cursor-pointer hover:bg-gray-200 dark:hover:bg-neutral-700 ${menuOpen ? "bg-gray-200 dark:bg-neutral-700" : ""}`}
 				animate={{
 					opacity: expanded ? 1 : 0,
 					width: expanded ? CARET_SIZE : 0,

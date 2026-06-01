@@ -36,16 +36,16 @@ export default function UserMenu({
 					/>
 				</button>
 			}
-			panelClassName="w-full sm:w-48 bg-white dark:bg-gray-800 rounded-md shadow-md py-1 border border-gray-200 dark:border-gray-700"
+			panelClassName="w-full sm:w-48 bg-white dark:bg-neutral-800 rounded-md shadow-md py-1 border border-gray-200 dark:border-neutral-700"
 		>
-			<div className="px-4 py-2 pb-3 text-xs text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700">
+			<div className="px-4 py-2 pb-3 text-xs text-gray-700 dark:text-neutral-300 border-b border-gray-200 dark:border-neutral-700">
 				Logged in as {user.login}
 			</div>
 			<a
 				href={`https://gist.github.com/${user.login}`}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+				className="block px-4 py-2 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700"
 			>
 				Your gists
 			</a>
@@ -53,7 +53,7 @@ export default function UserMenu({
 				href={`https://github.com/${user.login}`}
 				target="_blank"
 				rel="noopener noreferrer"
-				className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+				className="block px-4 py-2 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700"
 			>
 				Your GitHub profile
 			</a>
@@ -62,7 +62,7 @@ export default function UserMenu({
 					onClose();
 					onLogout();
 				}}
-				className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+				className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700"
 			>
 				Logout
 			</button>

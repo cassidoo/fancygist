@@ -1,4 +1,4 @@
-import { Eye, Pencil, Monitor, Sun, Moon } from "lucide-react";
+import { Eye, Pencil, Monitor, Sun, Moon, Check } from "lucide-react";
 import IconButton from "../IconButton";
 import Dropdown from "../Dropdown";
 import { useThemeStore, useResolvedTheme } from "../../hooks/useThemeStore";
@@ -11,10 +11,6 @@ interface ViewMenuProps {
 	isPreview: boolean;
 	onTogglePreview: () => void;
 }
-
-const isMac =
-	typeof navigator !== "undefined" &&
-	/Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
 
 function MenuItem({
 	icon,
@@ -34,16 +30,19 @@ function MenuItem({
 			onClick={onClick}
 			className={`flex w-full items-center gap-3 px-4 py-2 text-sm cursor-pointer transition-colors ${
 				active
-					? "text-lime-700 dark:text-lime-400 bg-gray-50 dark:bg-gray-700/50"
-					: "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+					? "text-lime-700 dark:text-lime-400 bg-gray-50 dark:bg-neutral-700/50"
+					: "text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700"
 			}`}
 		>
 			<span className="flex-shrink-0 w-4 flex items-center justify-center">
 				{icon}
 			</span>
 			<span className="flex-1 text-left">{label}</span>
+			{active && (
+				<Check size={14} className="flex-shrink-0 text-lime-600 dark:text-lime-400" />
+			)}
 			{hint && (
-				<span className="text-xs text-gray-400 dark:text-gray-500 font-mono">
+				<span className="text-xs text-gray-400 dark:text-neutral-500">
 					{hint}
 				</span>
 			)}
@@ -62,7 +61,7 @@ export default function ViewMenu({
 	const setPreference = useThemeStore((s) => s.setPreference);
 	const resolvedTheme = useResolvedTheme();
 
-	const previewHint = isMac ? "⌘⇧P" : "Ctrl+Shift+P";
+	const previewHint = "Ctrl+Shift+P";
 
 	return (
 		<Dropdown
@@ -78,7 +77,7 @@ export default function ViewMenu({
 					forceExpanded={isOpen}
 				/>
 			}
-			panelClassName="w-full sm:w-56 bg-white dark:bg-gray-800 rounded-md shadow-md py-1 border border-gray-200 dark:border-gray-700"
+			panelClassName="w-full sm:w-56 bg-white dark:bg-neutral-800 rounded-md shadow-md py-1 border border-gray-200 dark:border-neutral-700"
 			panelPositionClassName="sm:left-0 sm:mt-2"
 			panelOriginClassName="origin-top sm:origin-top-left"
 		>
@@ -92,10 +91,10 @@ export default function ViewMenu({
 				}}
 			/>
 
-			<div className="my-1 border-t border-gray-200 dark:border-gray-700" />
+			<div className="my-1 border-t border-gray-200 dark:border-neutral-700" />
 
 			<div className="px-4 py-1.5">
-				<span className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+				<span className="text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">
 					Theme
 				</span>
 			</div>
@@ -121,7 +120,7 @@ export default function ViewMenu({
 
 			{preference === "system" && (
 				<div className="px-4 py-1.5">
-					<span className="text-xs text-gray-400 dark:text-gray-500">
+					<span className="text-xs text-gray-400 dark:text-neutral-500">
 						Currently: {resolvedTheme === "dark" ? "Dark" : "Light"}
 					</span>
 				</div>

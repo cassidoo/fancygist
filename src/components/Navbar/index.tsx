@@ -95,7 +95,7 @@ export default function Navbar({
 
 	return (
 		<>
-			<nav className="bg-white dark:bg-gray-900 px-4 py-3">
+			<nav className="bg-white dark:bg-neutral-900 px-4 py-3">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
 						<IconButton
@@ -173,7 +173,7 @@ export default function Navbar({
 								disabled={isSaving}
 								variant="primary"
 								className={
-									hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500 dark:bg-gray-600 dark:hover:bg-gray-500"
+									hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500 dark:bg-neutral-600 dark:hover:bg-neutral-500"
 								}
 							/>
 						)}
@@ -203,7 +203,7 @@ export default function Navbar({
 									onBeforeLogin?.();
 									login();
 								}}
-								className="px-3 py-1.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-gray-200 rounded cursor-pointer"
+								className="px-3 py-1.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 rounded cursor-pointer"
 							>
 								Login with GitHub
 							</button>

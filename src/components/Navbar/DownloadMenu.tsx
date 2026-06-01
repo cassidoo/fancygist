@@ -29,14 +29,14 @@ export default function DownloadMenu({
 					menuOpen={isOpen}
 				/>
 			}
-			panelClassName="w-full sm:w-44 bg-white dark:bg-gray-800 rounded-md shadow-md py-1 border border-gray-200 dark:border-gray-700"
+			panelClassName="w-full sm:w-44 bg-white dark:bg-neutral-800 rounded-md shadow-md py-1 border border-gray-200 dark:border-neutral-700"
 		>
 			<button
 				onClick={() => {
 					onClose();
 					onDownloadHtml();
 				}}
-				className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+				className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700 cursor-pointer"
 			>
 				Download as HTML
 			</button>
@@ -45,7 +45,7 @@ export default function DownloadMenu({
 					onClose();
 					onDownloadPdf();
 				}}
-				className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+				className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-700 cursor-pointer"
 			>
 				Download as PDF
 			</button>

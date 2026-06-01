@@ -26,7 +26,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 						onClick={onClose}
 					>
 						<motion.div
-							className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-sm w-full p-6"
+							className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl max-w-sm w-full p-6"
 							style={{ transformOrigin: "top center" }}
 							initial={{ rotateX: -90, opacity: 0 }}
 							animate={{ rotateX: 0, opacity: 1 }}
@@ -34,19 +34,19 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 							transition={spring}
 							onClick={(e) => e.stopPropagation()}
 						>
-							<h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+							<h2 className="text-xl font-semibold text-gray-900 dark:text-neutral-100 mb-2">
 								FancyGist
 							</h2>
-							<p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+							<p className="text-sm text-gray-600 dark:text-neutral-400 mb-4">
 								Beautiful Markdown GitHub Gists.
 							</p>
-							<div className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+							<div className="text-xs text-gray-500 dark:text-neutral-400 mb-4">
 								<p>How to use:</p>
-								<ul className="list-disc list-inside mt-1 text-gray-500 dark:text-gray-400">
+								<ul className="list-disc list-inside mt-1 text-gray-500 dark:text-neutral-400">
 									<li>Just start typing in markdown.</li>
 									<li>
 										Start a line with{" "}
-										<code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">/</code> for
+										<code className="bg-gray-100 dark:bg-neutral-700 px-1 rounded">/</code> for
 										commands to insert code blocks, images, etc.
 									</li>
 									<li>
@@ -55,27 +55,27 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 									</li>
 									<li>
 										Use keyboard shortcuts for quick actions:
-										<ul className="list-disc list-inside mt-1 text-gray-500 dark:text-gray-400">
+										<ul className="list-disc list-inside mt-1 text-gray-500 dark:text-neutral-400">
 											<li>
-												<code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">
+												<code className="bg-gray-100 dark:bg-neutral-700 px-1 rounded">
 													Ctrl/Cmd + S
 												</code>{" "}
 												to save
 											</li>
 											<li>
-												<code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">
+												<code className="bg-gray-100 dark:bg-neutral-700 px-1 rounded">
 													Ctrl + Shift + K
 												</code>{" "}
 												for new gist
 											</li>
 											<li>
-												<code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">
+												<code className="bg-gray-100 dark:bg-neutral-700 px-1 rounded">
 													Ctrl/Cmd + Shift + O
 												</code>{" "}
 												to open gist
 											</li>
 											<li>
-												<code className="bg-gray-100 dark:bg-gray-700 px-1 rounded">
+												<code className="bg-gray-100 dark:bg-neutral-700 px-1 rounded">
 													Ctrl/Cmd + Shift + P
 												</code>{" "}
 												to toggle preview
@@ -84,7 +84,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 									</li>
 								</ul>
 							</div>
-							<div className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+							<div className="text-xs text-gray-500 dark:text-neutral-400 mb-4">
 								FancyGist is open source!{" "}
 								<a
 									href="https://github.com/cassidoo/fancygist"
@@ -98,7 +98,7 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
 							</div>
 							<button
 								onClick={onClose}
-								className="mt-5 w-full py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors cursor-pointer"
+								className="mt-5 w-full py-2 text-sm font-medium text-gray-700 dark:text-neutral-300 bg-gray-100 dark:bg-neutral-700 hover:bg-gray-200 dark:hover:bg-neutral-600 rounded-lg transition-colors cursor-pointer"
 							>
 								Close
 							</button>

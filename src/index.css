@@ -21,8 +21,8 @@ body {
 }
 
 .dark body {
-	background-color: #111827;
-	color: #e5e7eb;
+	background-color: #171717;
+	color: #e5e5e5;
 }
 
 .cm-ia-editor .cm-editor {
@@ -56,7 +56,7 @@ body {
 }
 
 .dark .cm-ia-editor .cm-lineNumbers {
-	color: #6b7280 !important;
+	color: #737373 !important;
 }
 
 .cm-ia-editor .cm-activeLineGutter {
@@ -119,7 +119,7 @@ body {
 }
 
 .dark .markdown-preview :not(pre) > code {
-	background: #2a2035;
+	background: #292524;
 	color: #ea9a97;
 }
 
@@ -146,7 +146,7 @@ body {
 }
 
 .dark .markdown-preview .footnotes {
-	border-top-color: #374151;
+	border-top-color: #404040;
 }
 
 .markdown-preview .footnotes ol {
@@ -182,11 +182,11 @@ body {
 }
 
 .dark .markdown-preview kbd {
-	background-color: #1f2937;
-	border-color: #374151;
+	background-color: #262626;
+	border-color: #404040;
 	box-shadow:
-		0 0 0 1px #374151,
-		0 3px 0 #374151;
+		0 0 0 1px #404040,
+		0 3px 0 #404040;
 }
 
 .markdown-preview kbd:hover {
@@ -200,8 +200,8 @@ body {
 
 .dark .markdown-preview kbd:hover {
 	box-shadow:
-		0 0 0 1px #374151,
-		0 2px 0 #374151;
+		0 0 0 1px #404040,
+		0 2px 0 #404040;
 }
 
 hr {
@@ -211,13 +211,13 @@ hr {
 }
 
 .dark hr {
-	border-top-color: #374151;
+	border-top-color: #404040;
 }
 
 /* highlight.js dark mode overrides */
 .dark .markdown-preview pre code.hljs {
-	background: #1e1e2e;
-	color: #cdd6f4;
+	background: #1c1c1c;
+	color: #d4d4d4;
 }
 
 .dark .markdown-preview .hljs-keyword,
@@ -262,6 +262,6 @@ hr {
 
 /* Callout dark mode overrides */
 .dark .markdown-preview [data-callout] {
-	background-color: #1f2937;
-	border-color: #374151;
+	background-color: #262626;
+	border-color: #404040;
 }
