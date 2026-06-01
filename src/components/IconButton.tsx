@@ -45,8 +45,8 @@ export default function IconButton({
 	const variantClasses =
 		variant === "primary"
 			? "bg-lime-600 text-white hover:bg-lime-700"
-			: "text-gray-700 hover:bg-gray-100";
-	const expandedClasses = variant === "default" && expanded ? "bg-gray-100" : "";
+			: "text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-800";
+	const expandedClasses = variant === "default" && expanded ? "bg-gray-100 dark:bg-neutral-800" : "";
 
 	const spring = { type: "spring" as const, stiffness: 500, damping: 30 };
 

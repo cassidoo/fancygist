@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
 
 body {
 	margin: 0;
@@ -19,12 +20,21 @@ body {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.dark body {
+	background-color: #171717;
+	color: #e5e5e5;
+}
+
 .cm-ia-editor .cm-editor {
 	padding: 48px 0 120px;
 	max-width: 720px;
 	margin: 0 auto;
 	font-size: 1.125rem;
 	line-height: 1.75;
+}
+
+.dark .cm-ia-editor .cm-editor {
+	background-color: transparent !important;
 }
 
 .cm-ia-editor .cm-scroller {
@@ -49,6 +59,10 @@ body {
 	min-width: 32px !important;
 }
 
+.dark .cm-ia-editor .cm-lineNumbers {
+	color: #737373 !important;
+}
+
 .cm-ia-editor .cm-activeLineGutter {
 	background-color: transparent !important;
 }
@@ -57,8 +71,16 @@ body {
 	background-color: oklch(64.8% 0.2 131.684 / 0.04) !important;
 }
 
+.dark .cm-ia-editor .cm-activeLine {
+	background-color: oklch(64.8% 0.2 131.684 / 0.08) !important;
+}
+
 .cm-ia-editor .cm-cursor {
 	border-left: 3px solid var(--color-lime-600);
+}
+
+.dark .cm-ia-editor .cm-cursor {
+	border-left: 3px solid var(--color-lime-400);
 }
 
 .cm-ia-editor .cm-focused {
@@ -100,6 +122,11 @@ body {
 	font-size: 0.9em;
 }
 
+.dark .markdown-preview :not(pre) > code {
+	background: #292524;
+	color: #ea9a97;
+}
+
 .markdown-preview :not(pre) > code::before,
 .markdown-preview :not(pre) > code::after {
 	content: " "; /* hide from tailwind typography */
@@ -120,6 +147,10 @@ body {
 	border-top: 1px solid #eae7e2;
 	font-size: 0.9em;
 	color: var(--color-gray-500);
+}
+
+.dark .markdown-preview .footnotes {
+	border-top-color: #404040;
 }
 
 .markdown-preview .footnotes ol {
@@ -154,6 +185,14 @@ body {
 	font-weight: 600;
 }
 
+.dark .markdown-preview kbd {
+	background-color: #262626;
+	border-color: #404040;
+	box-shadow:
+		0 0 0 1px #404040,
+		0 3px 0 #404040;
+}
+
 .markdown-preview kbd:hover {
 	position: relative;
 	top: 1px;
@@ -163,8 +202,70 @@ body {
 	cursor: pointer;
 }
 
+.dark .markdown-preview kbd:hover {
+	box-shadow:
+		0 0 0 1px #404040,
+		0 2px 0 #404040;
+}
+
 hr {
 	border: none;
 	border-top: 1px solid #eae7e2;
 	margin: 1rem 0;
+}
+
+.dark hr {
+	border-top-color: #404040;
+}
+
+/* highlight.js dark mode overrides */
+.dark .markdown-preview pre code.hljs {
+	background: #1c1c1c;
+	color: #d4d4d4;
+}
+
+.dark .markdown-preview .hljs-keyword,
+.dark .markdown-preview .hljs-selector-tag,
+.dark .markdown-preview .hljs-built_in {
+	color: #cba6f7;
+}
+
+.dark .markdown-preview .hljs-string,
+.dark .markdown-preview .hljs-attr {
+	color: #a6e3a1;
+}
+
+.dark .markdown-preview .hljs-comment,
+.dark .markdown-preview .hljs-quote {
+	color: #6c7086;
+}
+
+.dark .markdown-preview .hljs-number,
+.dark .markdown-preview .hljs-literal {
+	color: #fab387;
+}
+
+.dark .markdown-preview .hljs-title,
+.dark .markdown-preview .hljs-section {
+	color: #89b4fa;
+}
+
+.dark .markdown-preview .hljs-type,
+.dark .markdown-preview .hljs-name {
+	color: #f9e2af;
+}
+
+.dark .markdown-preview .hljs-variable,
+.dark .markdown-preview .hljs-template-variable {
+	color: #f38ba8;
+}
+
+.dark .markdown-preview .hljs-meta {
+	color: #f5c2e7;
+}
+
+/* Callout dark mode overrides */
+.dark .markdown-preview [data-callout] {
+	background-color: #262626;
+	border-color: #404040;
 }

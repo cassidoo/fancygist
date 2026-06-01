@@ -424,7 +424,7 @@ export default function EditorPage() {
 	const wordCount = content.trim() === "" ? 0 : content.trim().split(/\s+/).length;
 
 	return (
-		<div className="h-screen flex flex-col">
+		<div className="h-screen flex flex-col bg-white dark:bg-neutral-900">
 			<Navbar
 				onNew={handleNew}
 				onOpen={handleOpenGist}
@@ -465,7 +465,7 @@ export default function EditorPage() {
 				) : (
 					<Editor value={content} onChange={handleContentChange} />
 				)}
-				<div className="absolute bottom-2 right-3 text-xs text-gray-500 dark:text-gray-400 bg-white/70 dark:bg-gray-900/70 px-2 py-0.5 rounded pointer-events-none select-none">
+				<div className="absolute bottom-2 right-3 text-xs text-gray-500 dark:text-neutral-400 bg-white/70 dark:bg-neutral-900/70 px-2 py-0.5 rounded pointer-events-none select-none">
 					{wordCount} {wordCount === 1 ? "word" : "words"} • {charCount}{" "}
 					{charCount === 1 ? "character" : "characters"}
 				</div>

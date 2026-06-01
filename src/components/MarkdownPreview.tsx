@@ -91,7 +91,7 @@ function Heading({
 				href={href}
 				onClick={handleCopyHeadingLink}
 				aria-label={`Copy link to heading: ${headingText(children)}`}
-				className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-500 opacity-0 transition-opacity hover:text-gray-800 focus-visible:opacity-100 group-hover:opacity-100"
+				className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-500 opacity-0 transition-opacity hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 focus-visible:opacity-100 group-hover:opacity-100"
 			>
 				<LinkIcon size={14} aria-hidden="true" />
 			</a>
@@ -124,8 +124,8 @@ export default function MarkdownPreview({ content }: MarkdownPreviewProps) {
 	}, [content]);
 
 	return (
-		<div className="h-full overflow-auto bg-white">
-			<article className="markdown-preview prose prose-sm max-w-3xl mx-auto px-6 py-16">
+		<div className="h-full overflow-auto bg-white dark:bg-transparent">
+			<article className="markdown-preview prose prose-sm dark:prose-invert max-w-3xl mx-auto px-6 py-16">
 				<ReactMarkdown
 					remarkPlugins={[remarkGfm, remarkGemoji]}
 					rehypePlugins={[

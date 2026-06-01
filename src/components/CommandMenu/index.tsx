@@ -49,7 +49,7 @@ export default function CommandMenu({
 				<div className="slash-command-menu-positioner fixed w-60 max-w-fit h-min [perspective:600px]">
 					<motion.div
 						ref={menuRef}
-						className="bg-white border border-gray-200 rounded-lg shadow-lg py-2 max-h-64 max-w-64 overflow-y-auto z-50"
+						className="bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-lg shadow-lg py-2 max-h-64 max-w-64 overflow-y-auto z-50"
 						style={{ transformOrigin: "top left" }}
 						initial={{ rotateY: -70, opacity: 0 }}
 						animate={{ rotateY: 0, opacity: 1 }}
@@ -61,17 +61,17 @@ export default function CommandMenu({
 								key={command.label}
 								onMouseDown={(e) => e.preventDefault()}
 								onClick={() => onSelect(command)}
-								className={`w-full text-left px-4 py-2 hover:bg-gray-100 transition-colors cursor-pointer ${
+								className={`w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors cursor-pointer ${
 									index === selectedIndex
-										? "bg-gray-50 border-l-2 border-lime-600"
+										? "bg-gray-50 dark:bg-neutral-700/50 border-l-2 border-lime-600"
 										: "border-l-2 border-l-transparent"
 								}`}
 							>
-								<div className="font-medium text-sm text-gray-900">
+								<div className="font-medium text-sm text-gray-900 dark:text-neutral-100">
 									{displayPrefix}
 									{command.label}
 								</div>
-								<div className="text-xs text-gray-500">
+								<div className="text-xs text-gray-500 dark:text-neutral-400">
 									{command.description}
 								</div>
 							</button>

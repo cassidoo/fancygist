@@ -7,8 +7,6 @@ import {
 	ScrollText,
 	Check,
 	X,
-	Eye,
-	Pencil,
 	Link,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,6 +15,7 @@ import AboutModal from "../AboutModal";
 import DownloadMenu from "./DownloadMenu";
 import FileMenu from "./FileMenu";
 import UserMenu from "./UserMenu";
+import ViewMenu from "./ViewMenu";
 
 interface NavbarProps {
 	onNew: () => void;
@@ -70,6 +69,7 @@ export default function Navbar({
 	const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
 	const [isAboutOpen, setIsAboutOpen] = useState(false);
 	const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
+	const [isViewMenuOpen, setIsViewMenuOpen] = useState(false);
 
 	const copyShareLink = () => {
 		if (gistUrl) {
@@ -95,7 +95,7 @@ export default function Navbar({
 
 	return (
 		<>
-			<nav className="bg-white px-4 py-3">
+			<nav className="bg-white dark:bg-neutral-900 px-4 py-3">
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
 						<IconButton
@@ -134,10 +134,12 @@ export default function Navbar({
 							canUncheckBeforeFirstSave={canUncheckBeforeFirstSave}
 						/>
 
-						<IconButton
-							icon={isPreview ? <Pencil size={18} /> : <Eye size={18} />}
-							label={isPreview ? "Edit" : "Preview"}
-							onClick={onTogglePreview}
+						<ViewMenu
+							isOpen={isViewMenuOpen}
+							onClose={() => setIsViewMenuOpen(false)}
+							onToggleOpen={() => setIsViewMenuOpen((prev) => !prev)}
+							isPreview={isPreview}
+							onTogglePreview={onTogglePreview}
 						/>
 
 						{gistUrl && (
@@ -171,7 +173,7 @@ export default function Navbar({
 								disabled={isSaving}
 								variant="primary"
 								className={
-									hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500"
+									hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500 dark:bg-neutral-600 dark:hover:bg-neutral-500"
 								}
 							/>
 						)}
@@ -201,7 +203,7 @@ export default function Navbar({
 									onBeforeLogin?.();
 									login();
 								}}
-								className="px-3 py-1.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 rounded cursor-pointer"
+								className="px-3 py-1.5 text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-200 rounded cursor-pointer"
 							>
 								Login with GitHub
 							</button>

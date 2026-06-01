@@ -2,7 +2,7 @@ import { useState, useRef, useMemo, useEffect } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { markdown } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
-import { githubLight } from "@uiw/codemirror-theme-github";
+import { githubLight, githubDark } from "@uiw/codemirror-theme-github";
 import { EditorView, keymap } from "@codemirror/view";
 import { Prec } from "@codemirror/state";
 import type { ReactCodeMirrorRef } from "@uiw/react-codemirror";
@@ -11,6 +11,7 @@ import SlashCommandMenu, {
 	slashCommands,
 	type SlashCommand,
 } from "./CommandMenu";
+import { useResolvedTheme } from "../hooks/useThemeStore";
 
 // @ts-ignore
 import "rehype-callouts/theme/github";
@@ -22,6 +23,7 @@ interface EditorProps {
 
 export default function Editor({ value, onChange }: EditorProps) {
 	const editorRef = useRef<ReactCodeMirrorRef>(null);
+	const resolvedTheme = useResolvedTheme();
 	const [showMenu, setShowMenu] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedIndex, setSelectedIndex] = useState(0);
@@ -188,12 +190,12 @@ export default function Editor({ value, onChange }: EditorProps) {
 	};
 
 	return (
-		<div className="h-full w-full overflow-auto bg-white relative">
+		<div className="h-full w-full overflow-auto bg-white dark:bg-transparent relative">
 			<CodeMirror
 				ref={editorRef}
 				value={value}
 				minHeight="100%"
-				theme={githubLight}
+				theme={resolvedTheme === "dark" ? githubDark : githubLight}
 				extensions={[
 					slashCommandKeymap,
 					markdown({ codeLanguages: languages }),
