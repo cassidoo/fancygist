@@ -6,6 +6,7 @@ export interface SlashCommand {
 	content?: string;
 	action?: (view: EditorView, from: number, to: number) => void;
 	inline?: boolean;
+	modalId?: string;
 }
 
 export const slashCommands: SlashCommand[] = [
@@ -229,6 +230,20 @@ export const slashCommands: SlashCommand[] = [
 						{ from: docLength, to: docLength, insert: defText },
 					],
 					selection: { anchor: from + refText.length },
+				}),
+			);
+		},
+	},
+	{
+		label: "license",
+		description: "Add a license or copyright statement",
+		modalId: "license",
+		action: (view, from, to) => {
+			// Remove the /license command text
+			view.dispatch(
+				view.state.update({
+					changes: { from, to, insert: "" },
+					selection: { anchor: from },
 				}),
 			);
 		},
