@@ -8,6 +8,8 @@ import {
 	Check,
 	X,
 	Link,
+	Globe,
+	Lock,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import IconButton from "../IconButton";
@@ -92,6 +94,7 @@ export default function Navbar({
 	) : (
 		<Save size={18} />
 	);
+	const privacyLabel = isPublic ? "Public gist" : "Secret gist";
 
 	return (
 		<>
@@ -176,6 +179,17 @@ export default function Navbar({
 									hasUnsavedChanges ? "" : "bg-gray-400 hover:bg-gray-500 dark:bg-neutral-600 dark:hover:bg-neutral-500"
 								}
 							/>
+						)}
+
+						{user && (
+							<span
+								role="img"
+								aria-label={privacyLabel}
+								title={privacyLabel}
+								className="flex-shrink-0 flex items-center justify-center w-9 h-9 text-gray-700 dark:text-neutral-300"
+							>
+								{isPublic ? <Globe size={18} /> : <Lock size={18} />}
+							</span>
 						)}
 
 						{user && (
